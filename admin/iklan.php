@@ -11,8 +11,16 @@ $user = require_login();
 $program = admin_program();
 meta_auto_sync();
 
+$pdo = db();
+
 /* ---------- Periode ---------- */
+$firstDay = min(array_filter([
+    $pdo->query('SELECT MIN(day) FROM ad_insights')->fetchColumn() ?: null,
+    substr((string) $pdo->query('SELECT MIN(created_at) FROM registrations')->fetchColumn(), 0, 10) ?: null,
+    date('Y-m-d'),
+]));
 $presets = [
+    'semua'      => ['Sejak awal', $firstDay, date('Y-m-d')],
     '7'          => ['7 hari terakhir', date('Y-m-d', strtotime('-6 days')), date('Y-m-d')],
     '30'         => ['30 hari terakhir', date('Y-m-d', strtotime('-29 days')), date('Y-m-d')],
     'bulan-ini'  => ['Bulan ini', date('Y-m-01'), date('Y-m-d')],
@@ -29,8 +37,8 @@ if ($range === 'custom' && $validDate($_GET['from'] ?? '') && $validDate($_GET['
     [$rangeLabel, $from, $to] = $presets[$range];
 }
 
-$pdo = db();
 $keywords = $program ? campaign_keywords($program) : [];
+$waAds = wa_ad_ids();
 
 /* ---------- Biaya iklan per iklan ---------- */
 $ads = [];
@@ -42,8 +50,9 @@ $stmt = $pdo->prepare('SELECT ad_id, ad_name, adset_name, campaign_name, SUM(spe
                        FROM ad_insights WHERE day >= ? AND day <= ? GROUP BY ad_id');
 $stmt->execute([$from, $to]);
 foreach ($stmt as $a) {
-    if (!campaign_matches($a['campaign_name'], $keywords)) continue;
+    if (!campaign_matches($a['campaign_name'] . ' | ' . $a['ad_name'], $keywords)) continue;
     $ads[$a['ad_id']] = [
+        'channel' => isset($waAds[$a['ad_id']]) ? 'wa' : 'lp',
         'name' => $a['ad_name'], 'campaign' => $a['campaign_name'], 'adset' => $a['adset_name'],
         'spend' => (float) $a['spend'], 'clicks' => (int) $a['clicks'], 'impressions' => (int) $a['impressions'], 'messaging' => (int) $a['messaging'],
     ];
@@ -60,6 +69,11 @@ $leads = $stmt->fetchAll();
 $emptyRow = fn() => ['leads' => 0, 'hot' => 0, 'warm' => 0, 'cold' => 0, 'closing' => 0, 'visitors' => 0];
 $rows = [];   // per iklan
 $tot = ['leads' => 0, 'hot' => 0, 'warm' => 0, 'cold' => 0, 'unrated' => 0, 'closing' => 0, 'not_closing' => 0, 'from_ads' => 0, 'wa' => 0];
+// Per saluran: landing page (form/impor) vs WhatsApp (lead input manual)
+$ch = [
+    'lp' => ['spend' => 0.0, 'clicks' => 0, 'chats' => 0, 'leads' => 0, 'closing' => 0, 'not_closing' => 0, 'from_ads' => 0],
+    'wa' => ['spend' => 0.0, 'clicks' => 0, 'chats' => 0, 'leads' => 0, 'closing' => 0, 'not_closing' => 0, 'from_ads' => 0],
+];
 
 foreach ($leads as $l) {
     $key = 'none';
@@ -80,6 +94,12 @@ foreach ($leads as $l) {
     if ($l['closing'] === 'tidak') $tot['not_closing']++;
     if ($key !== 'none') $tot['from_ads']++;
     if ($l['source'] === 'manual') $tot['wa']++;
+
+    $c = $l['source'] === 'manual' ? 'wa' : 'lp';
+    $ch[$c]['leads']++;
+    if ($l['closing'] === 'ya') $ch[$c]['closing']++;
+    if ($l['closing'] === 'tidak') $ch[$c]['not_closing']++;
+    if ($key !== 'none') $ch[$c]['from_ads']++;
 }
 
 // Pengunjung landing page per iklan
@@ -106,14 +126,21 @@ foreach ($rows as $key => $r) {
         'spend'    => $ad['spend'] ?? null,
         'clicks'   => $ad['clicks'] ?? null,
         'messaging' => $ad['messaging'] ?? null,
+        'channel'  => $ad['channel'] ?? (isset($waAds[$key]) ? 'wa' : 'lp'),
     ];
 }
-usort($table, fn($a, $b) => [($b['spend'] ?? -1), $b['leads']] <=> [($a['spend'] ?? -1), $a['leads']]);
+// Iklan landing page dulu, lalu iklan WA; masing-masing urut biaya terbesar
+usort($table, fn($a, $b) => [$a['channel'] === 'wa', ($b['spend'] ?? -1), $b['leads']] <=> [$b['channel'] === 'wa', ($a['spend'] ?? -1), $a['leads']]);
 $noneRow = $rows['none'] ?? null;
 
 $spend = array_sum(array_column($ads, 'spend'));
 $clicks = array_sum(array_column($ads, 'clicks'));
 $chats = array_sum(array_column($ads, 'messaging'));
+foreach ($ads as $a) {
+    $ch[$a['channel']]['spend'] += $a['spend'];
+    $ch[$a['channel']]['clicks'] += $a['clicks'];
+    $ch[$a['channel']]['chats'] += $a['messaging'];
+}
 
 function str_starts_with_compat(string $h, string $n): bool
 {
@@ -171,28 +198,57 @@ admin_nav('iklan.php', $user);
           <?= csrf_field() ?><input type="hidden" name="action" value="meta_sync"><input type="hidden" name="back" value="<?= e($_SERVER['REQUEST_URI'] ?? '') ?>">
           <button class="font-bold text-brand-blue hover:text-brand-navy"><i class="fa-solid fa-rotate mr-0.5"></i>Perbarui sekarang</button>
         </form>
+        <span class="text-slate-300">|</span>
+        <form method="post" action="action.php" class="inline">
+          <?= csrf_field() ?><input type="hidden" name="action" value="meta_sync"><input type="hidden" name="full" value="1"><input type="hidden" name="back" value="<?= e($_SERVER['REQUEST_URI'] ?? '') ?>">
+          <button class="font-bold text-slate-500 hover:text-brand-navy" title="Tarik ulang semua data biaya & chat sejak awal kampanye"><i class="fa-solid fa-clock-rotate-left mr-0.5"></i>Tarik ulang sejak awal</button>
+        </form>
         <?php if ($lastError): ?><span class="w-full text-red-600 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i><?= e($lastError) ?></span><?php endif; ?>
       </div>
     <?php endif; ?>
 
-    <!-- Kartu ringkasan -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-      <?php
-      $cards = [
-          ['Biaya iklan', $metaOn ? rp($spend) : '–', $metaOn ? number_format($clicks, 0, ',', '.') . ' klik link · ' . number_format($chats, 0, ',', '.') . ' chat WA' : 'belum terhubung', 'text-brand-navy'],
-          ['Lead', number_format($tot['leads'], 0, ',', '.'), $tot['from_ads'] . ' tercatat dari iklan' . ($tot['wa'] ? ' · ' . $tot['wa'] . ' input WA' : ''), 'text-brand-navy'],
-          ['CPL', $metaOn && $tot['leads'] ? rp($spend / $tot['leads']) : '–', 'biaya per lead', 'text-brand-blue'],
-          ['Closing', number_format($tot['closing'], 0, ',', '.'), $tot['not_closing'] . ' tidak closing', 'text-emerald-600'],
-          ['CPA', $metaOn && $tot['closing'] ? rp($spend / $tot['closing']) : '–', 'biaya per closing', 'text-brand-blue'],
-          ['Closing rate', pct($tot['closing'], $tot['leads']), 'closing ÷ lead', 'text-emerald-600'],
-      ];
-      foreach ($cards as [$label, $value, $sub, $color]): ?>
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-          <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500"><?= $label ?></p>
-          <p class="text-xl sm:text-2xl font-black <?= $color ?> mt-1 whitespace-nowrap"><?= $value ?></p>
-          <p class="text-[11px] text-slate-400 mt-0.5"><?= $sub ?></p>
-        </div>
-      <?php endforeach; ?>
+    <?php
+    $num = fn($n) => number_format($n, 0, ',', '.');
+    $sections = [
+        'lp' => ['Iklan ke landing page', 'fa-solid fa-globe', 'text-brand-blue', [
+            ['Biaya iklan', $metaOn ? rp($ch['lp']['spend']) : '–', $metaOn ? $num($ch['lp']['clicks']) . ' klik link' : 'belum terhubung', 'text-brand-navy'],
+            ['Lead form', $num($ch['lp']['leads']), $ch['lp']['from_ads'] . ' tercatat dari iklan', 'text-brand-navy'],
+            ['CPL', $metaOn && $ch['lp']['leads'] ? rp($ch['lp']['spend'] / $ch['lp']['leads']) : '–', 'biaya ÷ lead form', 'text-brand-blue'],
+            ['Closing', $num($ch['lp']['closing']), $ch['lp']['not_closing'] . ' tidak closing', 'text-emerald-600'],
+            ['CPA', $metaOn && $ch['lp']['closing'] ? rp($ch['lp']['spend'] / $ch['lp']['closing']) : '–', 'biaya ÷ closing', 'text-brand-blue'],
+            ['Closing rate', pct($ch['lp']['closing'], $ch['lp']['leads']), 'closing ÷ lead', 'text-emerald-600'],
+        ]],
+        'wa' => ['Iklan klik ke WhatsApp', 'fa-brands fa-whatsapp', 'text-emerald-600', [
+            ['Biaya iklan', $metaOn ? rp($ch['wa']['spend']) : '–', $metaOn ? $num($ch['wa']['clicks']) . ' klik' : 'belum terhubung', 'text-brand-navy'],
+            ['Chat WA', $metaOn ? $num($ch['wa']['chats']) : '–', 'chat dimulai (data Meta)', 'text-brand-navy'],
+            ['Biaya per chat', $metaOn && $ch['wa']['chats'] ? rp($ch['wa']['spend'] / $ch['wa']['chats']) : '–', 'biaya ÷ chat WA', 'text-brand-blue'],
+            ['Lead WA dicatat', $num($ch['wa']['leads']), 'lewat tombol Tambah Lead WA', 'text-brand-navy'],
+            ['Closing', $num($ch['wa']['closing']), $ch['wa']['not_closing'] . ' tidak closing', 'text-emerald-600'],
+            ['CPA', $metaOn && $ch['wa']['closing'] ? rp($ch['wa']['spend'] / $ch['wa']['closing']) : '–', 'biaya ÷ closing', 'text-brand-blue'],
+        ]],
+    ];
+    foreach ($sections as $key => [$title, $icon, $iconColor, $cards]):
+        if ($key === 'wa' && !$ch['wa']['spend'] && !$ch['wa']['leads'] && !$ch['wa']['chats']) continue; ?>
+      <h2 class="text-sm font-extrabold text-brand-navy mb-2 flex items-center gap-2"><i class="<?= $icon ?> <?= $iconColor ?>"></i><?= $title ?></h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+        <?php foreach ($cards as [$label, $value, $sub, $color]): ?>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500"><?= $label ?></p>
+            <p class="text-xl sm:text-2xl font-black <?= $color ?> mt-1 whitespace-nowrap"><?= $value ?></p>
+            <p class="text-[11px] text-slate-400 mt-0.5"><?= $sub ?></p>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php endforeach; ?>
+
+    <!-- Total semua saluran -->
+    <div class="mb-6 rounded-2xl bg-brand-navy text-white px-5 py-3.5 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+      <span class="font-extrabold text-brand-accent uppercase text-[11px] tracking-wider">Total semua iklan</span>
+      <span>Biaya <strong><?= $metaOn ? rp($spend) : '–' ?></strong></span>
+      <span>Lead <strong><?= $num($tot['leads']) ?></strong></span>
+      <span>Closing <strong><?= $num($tot['closing']) ?></strong></span>
+      <span>CPA <strong><?= $metaOn && $tot['closing'] ? rp($spend / $tot['closing']) : '–' ?></strong></span>
+      <span>Closing rate <strong><?= pct($tot['closing'], $tot['leads']) ?></strong></span>
     </div>
 
     <!-- Kualitas lead -->
@@ -241,7 +297,10 @@ admin_nav('iklan.php', $user);
             <?php foreach ($table as $r): ?>
               <tr class="hover:bg-slate-50/70">
                 <td class="px-4 py-2.5">
-                  <p class="font-bold text-brand-navy break-words"><?= e($r['name']) ?></p>
+                  <p class="font-bold text-brand-navy break-words">
+                    <?php if ($r['channel'] === 'wa'): ?><span class="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 mr-1 align-middle"><i class="fa-brands fa-whatsapp"></i> WA</span>
+                    <?php else: ?><span class="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-subtle text-brand-blue mr-1 align-middle">LP</span><?php endif; ?>
+                    <?= e($r['name']) ?></p>
                   <?php if ($r['campaign']): ?><p class="text-[11px] text-slate-400 break-words"><?= e($r['campaign']) ?></p><?php endif; ?>
                 </td>
                 <td class="px-3 py-2.5 text-right whitespace-nowrap"><?= rp($r['spend']) ?></td>

@@ -76,9 +76,9 @@ admin_nav('pengaturan.php', $user);
             <input type="hidden" name="action" value="save_campaign_keywords">
             <input type="hidden" name="program" value="<?= e($slug) ?>">
             <div class="flex-1">
-              <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-brands fa-meta mr-1 text-brand-blue"></i>Kata kunci nama kampanye Meta untuk program ini</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-brands fa-meta mr-1 text-brand-blue"></i>Kata kunci nama kampanye / iklan Meta untuk program ini</label>
               <input name="campaign_keywords" value="<?= e(get_setting('campaign_keywords', $slug)) ?>" placeholder="Contoh: AK3U Web, Landing AK3U" class="<?= input_class() ?>">
-              <p class="text-[11px] text-slate-500 mt-1">Biaya iklan dihitung dari kampanye yang namanya mengandung salah satu kata ini (pisahkan dengan koma). Awali dengan tanda minus untuk <strong>mengecualikan</strong>, misalnya <code class="bg-slate-100 px-1 rounded">-Testing WA</code>. Kosongkan untuk menghitung semua kampanye.</p>
+              <p class="text-[11px] text-slate-500 mt-1">Biaya iklan dihitung dari kampanye atau iklan yang namanya mengandung salah satu kata ini (pisahkan dengan koma). Awali dengan tanda minus untuk <strong>mengecualikan</strong>, misalnya <code class="bg-slate-100 px-1 rounded">-Testing WA</code>. Kosongkan untuk menghitung semua kampanye.</p>
             </div>
             <button class="bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-sm px-5 py-2.5 rounded-xl">Simpan</button>
           </form>

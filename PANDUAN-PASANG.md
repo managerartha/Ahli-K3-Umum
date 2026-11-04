@@ -213,7 +213,8 @@ Kampanye **klik ke WhatsApp** untuk Ahli K3 Umum tetap dihitung, karena lead-nya
    AK3U Web, Landing AK3U
    ```
    Tips: beri nama kampanye setiap program dengan kata yang sama (misalnya selalu mengandung `AK3U`), supaya mudah dikenali.
-   Untuk **mengecualikan** kampanye, awali dengan tanda minus, misalnya `-BNSP`.
+   Untuk **mengecualikan**, awali dengan tanda minus, misalnya `-BNSP`. Kata kunci dicocokkan ke **nama kampanye maupun nama iklan**,
+   jadi iklan BNSP yang ada di dalam kampanye campuran (misalnya *FG- SMA - BNSP WA*) juga bisa dikecualikan.
 3. Klik **Simpan**.
 
 ## B5. Pasang parameter URL di iklan
@@ -261,6 +262,8 @@ Lead WA **tidak** dihitung dalam konversi landing page (karena tidak lewat landi
 | **Biaya iklan** | Total belanja iklan Meta pada periode itu (sesuai kata kunci kampanye program) |
 | **Lead** | Jumlah pendaftar pada periode itu (dari form, lead WA, dan data impor) |
 | **Chat WA** | Jumlah percakapan WhatsApp yang dimulai dari iklan, menurut Meta |
+| **Iklan ke landing page / Iklan klik ke WhatsApp** | Dashboard memisahkan keduanya otomatis: iklan yang pernah menghasilkan chat WA dianggap iklan WA. CPL landing page hanya memakai biaya iklan landing page |
+| **Sejak awal** | Pilihan periode untuk melihat semua data sejak kampanye pertama. Tombol **Tarik ulang sejak awal** menarik ulang semua data dari Meta |
 | **CPL** | Biaya iklan ÷ lead |
 | **Closing** | Jumlah pendaftar yang kamu tandai **Closing** |
 | **CPA** | Biaya iklan ÷ closing |

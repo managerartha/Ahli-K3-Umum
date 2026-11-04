@@ -12,6 +12,7 @@ require_once __DIR__ . '/bootstrap.php';
 // Versi Graph API. Jika suatu saat Meta menonaktifkan versi ini, ganti ke versi terbaru.
 const META_GRAPH_VERSION = 'v23.0';
 const META_SYNC_DAYS = 40;          // ambil data 40 hari terakhir setiap sinkron
+const META_FULL_SYNC_MONTHS = 24;   // sinkron penuh: data sejak awal (maksimal 24 bulan ke belakang)
 const META_AUTO_SYNC_SECONDS = 10800; // sinkron otomatis jika data lebih tua dari 3 jam
 
 function meta_graph_base(): string
@@ -58,13 +59,17 @@ function meta_http_get(string $url): array
  * Sinkronkan biaya iklan. Mengembalikan jumlah baris (iklan × hari) yang disimpan.
  * Melempar RuntimeException jika gagal; pesan error juga disimpan untuk ditampilkan.
  */
-function meta_sync(): int
+function meta_sync(bool $full = false): int
 {
+    // Sinkron pertama kali selalu penuh, supaya data sejak awal kampanye ikut tertarik.
+    if (get_setting('meta_full_synced') === '') $full = true;
     $account = preg_replace('/\D+/', '', get_setting('meta_account_id'));
     $token = get_setting('meta_token');
     if ($account === '' || $token === '') throw new RuntimeException('Koneksi Meta Ads belum diatur.');
 
-    $since = date('Y-m-d', strtotime('-' . (META_SYNC_DAYS - 1) . ' days'));
+    $since = $full
+        ? date('Y-m-d', strtotime('-' . META_FULL_SYNC_MONTHS . ' months'))
+        : date('Y-m-d', strtotime('-' . (META_SYNC_DAYS - 1) . ' days'));
     $until = date('Y-m-d');
 
     $url = meta_graph_base() . '/act_' . $account . '/insights?' . http_build_query([
@@ -114,6 +119,7 @@ function meta_sync(): int
 
         set_setting('meta_last_sync', '', now());
         set_setting('meta_last_error', '', '');
+        if ($full) set_setting('meta_full_synced', '', now());
         return count($rows);
     } catch (Throwable $e) {
         if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
@@ -136,7 +142,15 @@ function meta_auto_sync(): void
     }
 }
 
-/** Kata kunci nama kampanye untuk sebuah program (dipisah koma), dalam huruf kecil. */
+/** Iklan yang pernah menghasilkan chat WhatsApp = iklan WA (klik ke WhatsApp). */
+function wa_ad_ids(): array
+{
+    $ids = [];
+    foreach (db()->query('SELECT ad_id FROM ad_insights GROUP BY ad_id HAVING SUM(messaging) > 0') as $r) $ids[$r['ad_id']] = true;
+    return $ids;
+}
+
+/** Kata kunci nama kampanye/iklan untuk sebuah program (dipisah koma), dalam huruf kecil. */
 function campaign_keywords(string $program): array
 {
     $raw = get_setting('campaign_keywords', $program);

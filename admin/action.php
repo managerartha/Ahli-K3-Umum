@@ -90,7 +90,7 @@ switch ($action) {
 
     case 'meta_sync':
         try {
-            $n = meta_sync();
+            $n = meta_sync(!empty($_POST['full']));
             flash("Biaya iklan diperbarui ($n baris data).");
         } catch (Throwable $e) {
             flash('Gagal memperbarui biaya iklan: ' . $e->getMessage(), 'error');
