@@ -77,7 +77,7 @@ admin_nav('pengaturan.php', $user);
             <input type="hidden" name="program" value="<?= e($slug) ?>">
             <div class="flex-1">
               <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-brands fa-meta mr-1 text-brand-blue"></i>Kata kunci nama kampanye Meta untuk program ini</label>
-              <input name="campaign_keywords" value="<?= e(get_setting('campaign_keywords', $slug)) ?>" placeholder="Contoh: K3UKYK, K3UYK" class="<?= input_class() ?>">
+              <input name="campaign_keywords" value="<?= e(get_setting('campaign_keywords', $slug)) ?>" placeholder="Contoh: AK3U Web, Landing AK3U" class="<?= input_class() ?>">
               <p class="text-[11px] text-slate-500 mt-1">Biaya iklan dihitung dari kampanye yang namanya mengandung salah satu kata ini (pisahkan dengan koma). Kosongkan untuk menghitung semua kampanye.</p>
             </div>
             <button class="bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-sm px-5 py-2.5 rounded-xl">Simpan</button>
@@ -99,7 +99,7 @@ admin_nav('pengaturan.php', $user);
           <input type="hidden" name="action" value="save_meta">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ID Akun Iklan</label>
-            <input name="meta_account_id" value="<?= e(get_setting('meta_account_id')) ?>" placeholder="Contoh: 1070855277281289" inputmode="numeric" class="<?= input_class() ?>">
+            <input name="meta_account_id" value="<?= e(get_setting('meta_account_id')) ?>" placeholder="Contoh: 2229317924648301" inputmode="numeric" class="<?= input_class() ?>">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Access Token</label>

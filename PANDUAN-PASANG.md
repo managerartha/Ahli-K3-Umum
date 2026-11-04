@@ -169,18 +169,18 @@ Tanpa keduanya, tombol Cold/Warm/Hot, Closing, dan closing rate tetap bisa dipak
 
 Token Meta harus "menempel" ke sebuah aplikasi. Aplikasi ini tidak dipublikasikan ke mana pun.
 
-1. Buka **developers.facebook.com**, login dengan akun Facebook yang menjadi admin di Business **PT. Artha Safety Indonesia**.
+1. Buka **developers.facebook.com**, login dengan akun Facebook yang menjadi admin di Business **Artha Safety GM**.
 2. Klik **My Apps / Aplikasi Saya** → **Create App / Buat Aplikasi**.
 3. Isi nama aplikasi, misalnya `Dashboard Pelatihan`, lalu isi email.
 4. Saat ditanya kegunaan (*use case*), pilih **Other / Lainnya**, lalu tipe **Business**.
-5. Di pilihan **Business portfolio**, pilih **PT. Artha Safety Indonesia**, lalu klik **Create app**.
+5. Di pilihan **Business portfolio**, pilih **Artha Safety GM**, lalu klik **Create app**.
 
 ## B2. Buat System User dan token
 
-1. Buka **business.facebook.com/settings** (Pengaturan Bisnis), lalu pastikan yang terpilih adalah **PT. Artha Safety Indonesia**.
+1. Buka **business.facebook.com/settings** (Pengaturan Bisnis), lalu pastikan yang terpilih adalah **Artha Safety GM** (bukan PT. Artha Safety Indonesia).
 2. Menu kiri: **Users → System users / Pengguna sistem** → **Add / Tambah**.
    Nama: `Dashboard Pelatihan`, peran: **Employee / Karyawan**, lalu klik **Create**.
-3. Klik system user tersebut → **Assign assets / Tetapkan aset** → **Ad accounts / Akun iklan** → centang **Artha Meta** →
+3. Klik system user tersebut → **Assign assets / Tetapkan aset** → **Ad accounts / Akun iklan** → centang **Artha GM** →
    izin **View performance / Lihat performa** sudah cukup → **Save / Simpan**.
 4. Masih di system user yang sama, klik **Generate new token / Buat token baru**:
    - App: pilih **Dashboard Pelatihan** (dari langkah B1)
@@ -194,7 +194,7 @@ Token Meta harus "menempel" ke sebuah aplikasi. Aplikasi ini tidak dipublikasika
 ## B3. Tempel di dashboard
 
 1. Dashboard → **Pengaturan** → bagian **Koneksi Meta Ads**.
-2. **ID Akun Iklan:** `1070855277281289` (akun **Artha Meta**).
+2. **ID Akun Iklan:** `2229317924648301` (akun **Artha GM**).
 3. **Access Token:** tempel token dari B2.
 4. Klik **Simpan & Tes Koneksi**. Jika berhasil, muncul tulisan hijau: *"Koneksi Meta Ads berhasil. … baris data biaya iklan diambil."*
 
@@ -202,14 +202,17 @@ Setelah ini, biaya iklan diperbarui otomatis setiap 3 jam saat halaman Iklan & C
 
 ## B4. Atur kata kunci kampanye per program
 
-Supaya biaya iklan pelatihan lain (BNSP, alat berat, dan lain-lain) tidak ikut terhitung di Ahli K3 Umum Kemnaker:
+Jika akun **Artha GM** hanya dipakai untuk iklan landing page Ahli K3 Umum, **langkah ini boleh dilewati** (kosongkan = semua kampanye dihitung).
+
+Jika di akun itu ada kampanye untuk pelatihan lain atau kampanye klik ke WhatsApp, isi kata kunci supaya biayanya tidak ikut terhitung:
 
 1. Dashboard → **Pengaturan** → kartu **Ahli K3 Umum Kemnaker RI** → kolom **Kata kunci nama kampanye Meta**.
-2. Isi bagian nama kampanye yang khusus untuk landing page ini, pisahkan dengan koma. Contoh dari nama kampanye kamu saat ini:
+2. Isi bagian nama kampanye yang khusus untuk landing page ini, pisahkan dengan koma. Contoh:
    ```
-   Web Ads - K3UKYK, Web - K3UYK
+   AK3U Web, Landing AK3U
    ```
-   Kampanye **CTWA** (klik ke WhatsApp) sebaiknya **tidak** dimasukkan, karena lead-nya tidak lewat landing page.
+   Tips: beri nama kampanye landing page dengan kata yang sama (misalnya selalu diawali `AK3U Web`), supaya mudah dikenali.
+   Kampanye **klik ke WhatsApp** sebaiknya **tidak** dimasukkan, karena lead-nya tidak lewat landing page.
 3. Klik **Simpan**.
 
 ## B5. Pasang parameter URL di iklan
