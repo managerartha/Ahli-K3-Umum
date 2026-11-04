@@ -1,6 +1,6 @@
 # Landing Page Pelatihan + Dashboard: PT Artha Safety Indonesia
 
-Hosting: **https://pelatihan.arthasafetyindonesia.co.id**
+Hosting: **https://pelatihan.arthasafetyindonesia.com**
 
 Beberapa landing page pelatihan dalam satu subdomain, dengan satu dashboard admin.
 Semua data (pendaftar, kunjungan, tanggal batch) disimpan di hosting sendiri,

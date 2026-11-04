@@ -7,11 +7,11 @@ Hasil akhirnya:
 
 | Alamat | Isinya |
 |---|---|
-| `https://pelatihan.arthasafetyindonesia.co.id/ahli-k3-umum/` | Landing page Ahli K3 Umum |
-| `https://pelatihan.arthasafetyindonesia.co.id/admin/` | Dashboard |
-| `https://pelatihan.arthasafetyindonesia.co.id/` | Otomatis diarahkan ke landing page Ahli K3 Umum |
+| `https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/` | Landing page Ahli K3 Umum |
+| `https://pelatihan.arthasafetyindonesia.com/admin/` | Dashboard |
+| `https://pelatihan.arthasafetyindonesia.com/` | Otomatis diarahkan ke landing page Ahli K3 Umum |
 
-**Yang kamu butuhkan:** login cPanel hosting `arthasafetyindonesia.co.id`, dan file `paket-upload-pelatihan.zip`.
+**Yang kamu butuhkan:** login cPanel hosting `arthasafetyindonesia.com`, dan file `paket-upload-pelatihan.zip`.
 
 Perkiraan waktu: 20–30 menit.
 
@@ -22,8 +22,8 @@ Perkiraan waktu: 20–30 menit.
 1. Login ke cPanel.
 2. Di kolom pencarian atas, ketik **Domains**, lalu klik menu **Domains** (di cPanel lama namanya **Subdomains**).
 3. Klik tombol **Create A New Domain**.
-4. Di kolom **Domain**, ketik: `pelatihan.arthasafetyindonesia.co.id`
-5. Kolom **Document Root** biasanya terisi otomatis, misalnya `pelatihan.arthasafetyindonesia.co.id` atau `public_html/pelatihan`.
+4. Di kolom **Domain**, ketik: `pelatihan.arthasafetyindonesia.com`
+5. Kolom **Document Root** biasanya terisi otomatis, misalnya `pelatihan.arthasafetyindonesia.com` atau `public_html/pelatihan`.
    **Catat nama folder ini**, karena dipakai di langkah 3.
 6. Klik **Submit**.
 
@@ -34,7 +34,7 @@ Perkiraan waktu: 20–30 menit.
 ## Langkah 2: Aktifkan SSL (gembok hijau / https)
 
 1. Di cPanel, cari **SSL/TLS Status**, lalu klik.
-2. Centang `pelatihan.arthasafetyindonesia.co.id`, lalu klik **Run AutoSSL**.
+2. Centang `pelatihan.arthasafetyindonesia.com`, lalu klik **Run AutoSSL**.
 3. Tunggu sampai muncul tanda hijau. Bisa beberapa menit sampai beberapa jam setelah subdomain dibuat.
 
 SSL penting supaya password dashboard tidak bisa diintip orang lain.
@@ -80,7 +80,7 @@ Folder `data` adalah tempat menyimpan data pendaftar, jadi harus bisa ditulisi.
 
 ## Langkah 6: Buat akun admin (lakukan segera!)
 
-1. Buka `https://pelatihan.arthasafetyindonesia.co.id/admin/`
+1. Buka `https://pelatihan.arthasafetyindonesia.com/admin/`
 2. Muncul halaman **Buat Akun Admin**. Isi username dan password (minimal 8 karakter), lalu klik **Buat Akun & Masuk**.
 3. **Simpan username dan password ini** di tempat aman.
 
@@ -90,7 +90,7 @@ Folder `data` adalah tempat menyimpan data pendaftar, jadi harus bisa ditulisi.
 ## Langkah 7: Tes semuanya
 
 1. Di dashboard, buka **Pengaturan**, lalu cek tanggal batch. Ubah kalau perlu, lalu klik **Simpan Tanggal**.
-2. Buka `https://pelatihan.arthasafetyindonesia.co.id/ahli-k3-umum/` dan pastikan tanggalnya sudah sesuai.
+2. Buka `https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/` dan pastikan tanggalnya sudah sesuai.
 3. Isi form pendaftaran dengan data tes, lalu klik **Kirim Pendaftaran**.
 4. Kembali ke dashboard, buka **Pendaftar**. Data tes harus muncul. Klik tombol hijau, dan WhatsApp akan terbuka.
 5. Hapus data tes dengan ikon tempat sampah.
@@ -99,8 +99,8 @@ Folder `data` adalah tempat menyimpan data pendaftar, jadi harus bisa ditulisi.
 
 Buka dua alamat ini di browser. **Keduanya harus menampilkan "403 Forbidden" atau "Not Found":**
 
-- `https://pelatihan.arthasafetyindonesia.co.id/data/.ht-artha.sqlite`
-- `https://pelatihan.arthasafetyindonesia.co.id/includes/bootstrap.php`
+- `https://pelatihan.arthasafetyindonesia.com/data/.ht-artha.sqlite`
+- `https://pelatihan.arthasafetyindonesia.com/includes/bootstrap.php`
 
 Kalau salah satunya malah **mengunduh file** atau **menampilkan isi**, berarti data pendaftar bisa diakses orang lain.
 Jangan pakai dulu, lalu minta bantuan Claude atau support hosting untuk memperbaikinya.
@@ -110,16 +110,16 @@ Jangan pakai dulu, lalu minta bantuan Claude atau support hosting untuk memperba
 Ganti semua link lama ke landing page dengan:
 
 ```
-https://pelatihan.arthasafetyindonesia.co.id/ahli-k3-umum/
+https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/
 ```
 
 Supaya sumber pendaftar terlihat di dashboard, tambahkan keterangan di belakang link, contoh:
 
 | Dipasang di | Link |
 |---|---|
-| Iklan Facebook/Instagram | `https://pelatihan.arthasafetyindonesia.co.id/ahli-k3-umum/?utm_source=facebook&utm_campaign=nama-iklan` |
-| Bio Instagram | `https://pelatihan.arthasafetyindonesia.co.id/ahli-k3-umum/?utm_source=instagram` |
-| Iklan Google | `https://pelatihan.arthasafetyindonesia.co.id/ahli-k3-umum/?utm_source=google` |
+| Iklan Facebook/Instagram | `https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/?utm_source=facebook&utm_campaign=nama-iklan` |
+| Bio Instagram | `https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/?utm_source=instagram` |
+| Iklan Google | `https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/?utm_source=google` |
 
 ---
 
