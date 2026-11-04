@@ -44,7 +44,7 @@ Pilihan program di kanan atas dashboard: **Semua program** atau satu program ter
 ## Kebutuhan hosting
 
 - PHP **7.4+** dengan ekstensi `pdo_sqlite`
-- Apache / LiteSpeed (cPanel). Folder `data/` dan `includes/` dikunci lewat `.htaccess`.
+- Apache / LiteSpeed (Hostinger, cPanel). Folder `data/` dan `includes/` dikunci lewat `.htaccess`.
   Jika hosting memakai Nginx, folder `data/` dan `includes/` harus diblokir manual di konfigurasi server.
 
 ## Struktur

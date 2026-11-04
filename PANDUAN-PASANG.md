@@ -1,7 +1,8 @@
-# Panduan Pasang ke Hosting (untuk pemula)
+# Panduan Pasang ke Hostinger (hPanel) untuk pemula
 
-Panduan ini memakai **cPanel**, panel hosting yang paling umum (Rumahweb, DomaiNesia, IDCloudHost, dan lain-lain).
-Kalau tampilan panel hosting kamu berbeda, nama menunya biasanya mirip.
+Panduan ini untuk hosting **Hostinger** dengan panel **hPanel**.
+Tampilan hPanel kadang diperbarui. Kalau ada nama menu yang tidak ketemu, pakai **kolom pencarian** di bagian atas hPanel
+dan ketik nama menunya (misalnya "Subdomains" atau "File Manager").
 
 Hasil akhirnya:
 
@@ -11,7 +12,7 @@ Hasil akhirnya:
 | `https://pelatihan.arthasafetyindonesia.com/admin/` | Dashboard |
 | `https://pelatihan.arthasafetyindonesia.com/` | Otomatis diarahkan ke landing page Ahli K3 Umum |
 
-**Yang kamu butuhkan:** login cPanel hosting `arthasafetyindonesia.com`, dan file `paket-upload-pelatihan.zip`.
+**Yang kamu butuhkan:** login Hostinger (akun yang memegang `arthasafetyindonesia.com`), dan file `paket-upload-pelatihan.zip`.
 
 Perkiraan waktu: 20–30 menit.
 
@@ -19,36 +20,41 @@ Perkiraan waktu: 20–30 menit.
 
 ## Langkah 1: Buat subdomain `pelatihan`
 
-1. Login ke cPanel.
-2. Di kolom pencarian atas, ketik **Domains**, lalu klik menu **Domains** (di cPanel lama namanya **Subdomains**).
-3. Klik tombol **Create A New Domain**.
-4. Di kolom **Domain**, ketik: `pelatihan.arthasafetyindonesia.com`
-5. Kolom **Document Root** biasanya terisi otomatis, misalnya `pelatihan.arthasafetyindonesia.com` atau `public_html/pelatihan`.
-   **Catat nama folder ini**, karena dipakai di langkah 3.
-6. Klik **Submit**.
+1. Login ke **hpanel.hostinger.com**.
+2. Klik menu **Websites**, cari `arthasafetyindonesia.com`, lalu klik **Manage** (atau **Dashboard**) di sebelahnya.
+3. Di menu kiri, buka **Domains → Subdomains**.
+4. Di kolom **Create a New Subdomain**, ketik `pelatihan` (bagian `.arthasafetyindonesia.com` sudah otomatis).
+5. Biarkan pilihan **Custom folder for subdomain** tidak dicentang. Hostinger otomatis membuat foldernya,
+   biasanya `public_html/pelatihan`.
+6. Klik **Create**.
+7. Subdomain muncul di daftar di bawahnya. **Catat nama foldernya** (kolom *Folder* / *Directory*), karena dipakai di Langkah 3.
 
-> **Kalau subdomain tidak bisa dibuka setelah beberapa jam:** DNS domain kamu mungkin diatur di tempat lain
-> (misalnya Cloudflare atau penyedia domain). Minta orang yang mengatur DNS menambahkan record:
-> tipe `A`, nama `pelatihan`, isi = alamat IP hosting kamu (lihat di cPanel → **Server Information → Shared IP Address**).
+> **Kalau subdomain tidak bisa dibuka setelah beberapa jam:** domain kamu mungkin memakai DNS di luar Hostinger
+> (misalnya Cloudflare). Minta orang yang mengatur DNS menambahkan record: tipe `A`, nama `pelatihan`,
+> isi = alamat IP website kamu (lihat di hPanel → **Websites → Manage → Dashboard**, bagian *Website IP* / *Plan details*).
 
-## Langkah 2: Aktifkan SSL (gembok hijau / https)
+## Langkah 2: Pastikan SSL aktif (gembok / https)
 
-1. Di cPanel, cari **SSL/TLS Status**, lalu klik.
-2. Centang `pelatihan.arthasafetyindonesia.com`, lalu klik **Run AutoSSL**.
-3. Tunggu sampai muncul tanda hijau. Bisa beberapa menit sampai beberapa jam setelah subdomain dibuat.
+Hostinger biasanya memasang SSL gratis otomatis untuk subdomain baru, tapi tetap dicek:
+
+1. Di menu kiri website, buka **Security → SSL**.
+2. Cari `pelatihan.arthasafetyindonesia.com` di daftar.
+   - Jika statusnya **Active**, lanjut ke langkah berikutnya.
+   - Jika belum ada atau belum aktif, klik **Install SSL**, pilih subdomain `pelatihan.arthasafetyindonesia.com`, lalu klik **Install**.
+3. Pemasangan bisa memakan waktu beberapa menit sampai beberapa jam.
 
 SSL penting supaya password dashboard tidak bisa diintip orang lain.
 
 ## Langkah 3: Upload file
 
-1. Di cPanel, buka **File Manager**.
-2. Klik **Settings** (kanan atas), centang **Show Hidden Files (dotfiles)**, lalu klik **Save**.
-   Ini supaya file pengaman bernama `.htaccess` terlihat.
-3. Di panel kiri, buka folder subdomain yang kamu catat di Langkah 1.
-   Jika di dalamnya sudah ada file bawaan (misalnya `index.html` atau `cgi-bin`), biarkan saja `cgi-bin`, tapi **hapus `index.html`**.
-4. Klik **Upload** (menu atas), lalu pilih file `paket-upload-pelatihan.zip`. Tunggu sampai 100%, lalu klik **Go Back to ...**.
-5. Klik kanan file `paket-upload-pelatihan.zip`, pilih **Extract**, lalu klik **Extract File(s)**.
-6. Setelah selesai, isi folder harus terlihat seperti ini:
+1. Di menu kiri website, buka **Files → File Manager**.
+2. Masuk ke folder subdomain yang kamu catat di Langkah 1 (biasanya `public_html` → `pelatihan`), dengan klik dua kali.
+3. Jika di dalamnya sudah ada file bawaan Hostinger seperti `default.php` atau `index.html`, **hapus** (klik kanan → **Delete**).
+4. Klik ikon **Upload** di kanan atas (ikon panah ke atas), pilih **File**, lalu pilih `paket-upload-pelatihan.zip`. Tunggu sampai selesai.
+5. Klik kanan file `paket-upload-pelatihan.zip`, lalu pilih **Extract**.
+   - Jika muncul kolom nama folder tujuan, **kosongkan** atau isi dengan titik `.` supaya isinya diekstrak ke folder ini.
+   - Klik **Extract**.
+6. Setelah selesai, isi folder `pelatihan` harus terlihat seperti ini:
 
    ```
    .htaccess
@@ -61,22 +67,26 @@ SSL penting supaya password dashboard tidak bisa diintip orang lain.
    paket-upload-pelatihan.zip
    ```
 
-   Kalau semuanya malah masuk ke dalam folder tambahan (misalnya `paket-upload-pelatihan/`),
-   masuk ke folder itu, pilih semua isinya (**Select All**), klik **Move**, lalu pindahkan ke folder subdomain.
+   - Kalau file `.htaccess` tidak terlihat, tidak apa-apa. File itu tersembunyi tapi tetap ada.
+   - Kalau semuanya malah masuk ke folder tambahan (misalnya `paket-upload-pelatihan/`): masuk ke folder itu,
+     centang semua isinya, klik kanan → **Move**, lalu pindahkan ke folder `pelatihan`. Setelah itu hapus folder tambahan yang kosong.
 7. Hapus file `paket-upload-pelatihan.zip` (sudah tidak dibutuhkan).
 
 ## Langkah 4: Atur izin folder `data`
 
-Folder `data` adalah tempat menyimpan data pendaftar, jadi harus bisa ditulisi.
+Folder `data` adalah tempat menyimpan data pendaftar, jadi harus bisa ditulisi. Di Hostinger biasanya sudah benar, tapi tetap dicek:
 
-1. Klik kanan folder `data`, pilih **Change Permissions**.
-2. Pastikan angkanya **755**, lalu klik **Change Permissions**.
+1. Klik kanan folder `data`, lalu pilih **Permissions**.
+2. Pastikan angkanya **755** (Owner: Read, Write, Execute; Group & Public: Read, Execute), lalu klik **Update**.
 
 ## Langkah 5: Cek versi PHP
 
-1. Di cPanel, cari **Select PHP Version** (atau **MultiPHP Manager**).
-2. Pastikan versi PHP untuk subdomain `pelatihan` minimal **7.4** (lebih baik **8.1** atau lebih baru).
-3. Jika ada daftar ekstensi, pastikan **pdo_sqlite** dan **sqlite3** tercentang.
+1. Di menu kiri website, buka **Advanced → PHP Configuration**.
+2. Di tab **PHP version**, pilih **8.2** (atau versi 8 terbaru yang tersedia), lalu klik **Update**.
+3. Buka tab **PHP extensions**, lalu pastikan **pdo_sqlite** dan **sqlite3** tercentang. Klik **Save** jika ada yang diubah.
+
+> Pengaturan PHP di Hostinger berlaku untuk seluruh website `arthasafetyindonesia.com` beserta subdomainnya.
+> Jika website utama kamu juga ada di hosting yang sama, PHP 8.2 umumnya aman. Kalau ragu, tanyakan ke developer website utama dulu.
 
 ## Langkah 6: Buat akun admin (lakukan segera!)
 
@@ -135,7 +145,9 @@ Supaya sumber pendaftar terlihat di dashboard, tambahkan keterangan di belakang 
 
 | Masalah | Coba ini |
 |---|---|
-| Halaman putih / "500 Internal Server Error" | Cek Langkah 5 (versi PHP). Jika masih error, buka cPanel → **Errors** dan kirim isinya ke Claude atau developer |
+| Halaman putih / "500 Internal Server Error" | Cek Langkah 5 (versi PHP dan ekstensi). Jika masih error, kirim screenshot halaman error ke Claude atau developer |
 | Form terkirim tapi data tidak muncul di dashboard | Cek Langkah 4 (izin folder `data`) |
+| Subdomain menampilkan halaman "default" Hostinger | File `default.php` belum dihapus (Langkah 3 nomor 3) |
+| Gembok/https belum muncul | Tunggu beberapa jam setelah subdomain dibuat, lalu cek lagi Langkah 2 |
 | Lupa password dashboard | Minta bantuan Claude atau developer. Password bisa direset tanpa menghapus data |
 | Mau tambah landing page pelatihan baru | Kirim kode/isi landing page-nya ke Claude untuk disiapkan |
