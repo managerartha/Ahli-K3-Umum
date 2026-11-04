@@ -1276,7 +1276,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             <div class="flex items-start gap-3.5">
               <i class="fa-solid fa-check text-brand-blue text-base mt-0.5 flex-shrink-0"></i>
               <span class="text-sm sm:text-base font-bold text-slate-800">
-                Sertifikat kompetensi penunjang sebanyak 40 e-sertifikat
+                Sertifikat kompetensi penunjang sebanyak 43 e-sertifikat
               </span>
             </div>
           </div>
@@ -1727,7 +1727,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-blue text-xs mt-1 flex-shrink-0"></i>
-                  <span>Free HSE Training 40 e-sertifikat</span>
+                  <span>Free HSE Training 43 e-sertifikat</span>
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-blue text-xs mt-1 flex-shrink-0"></i>
@@ -1790,7 +1790,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-accent text-xs mt-1 flex-shrink-0"></i>
-                  <span>Free HSE Training 40 e-sertifikat</span>
+                  <span>Free HSE Training 43 e-sertifikat</span>
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-accent text-xs mt-1 flex-shrink-0"></i>
@@ -1854,7 +1854,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-blue text-xs mt-1 flex-shrink-0"></i>
-                  <span>Free HSE Training 40 e-sertifikat</span>
+                  <span>Free HSE Training 43 e-sertifikat</span>
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-blue text-xs mt-1 flex-shrink-0"></i>
@@ -1917,7 +1917,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-accent text-xs mt-1 flex-shrink-0"></i>
-                  <span>Free HSE Training 40 e-sertifikat</span>
+                  <span>Free HSE Training 43 e-sertifikat</span>
                 </div>
                 <div class="flex items-start gap-3">
                   <i class="fa-solid fa-check text-brand-accent text-xs mt-1 flex-shrink-0"></i>
@@ -2466,7 +2466,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
               <i id="faq-icon-14" class="fa-solid fa-chevron-down text-xs text-brand-blue transition-transform duration-200 shrink-0"></i>
             </button>
             <div id="faq-ans-14" class="hidden pt-3 mt-3 border-t border-slate-100 text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">
-              PT Artha Safety Indonesia adalah PJK3 resmi Kemnaker RI dengan rekam jejak <strong>3.500+ alumni & kelulusan 100%</strong>. Kami menyediakan fasilitas terlengkap (Training kit eksklusif, kemeja safety, observasi pabrik riil), bimbingan ujian intensif, bonus 40 e-sertifikat HSE, gratis praktik Basic Safety Training (BST), serta komunitas <em>Safety Champions Talent</em> untuk peluang karir.
+              PT Artha Safety Indonesia adalah PJK3 resmi Kemnaker RI dengan rekam jejak <strong>3.500+ alumni & kelulusan 100%</strong>. Kami menyediakan fasilitas terlengkap (Training kit eksklusif, kemeja safety, observasi pabrik riil), bimbingan ujian intensif, bonus 43 e-sertifikat HSE, gratis praktik Basic Safety Training (BST), serta komunitas <em>Safety Champions Talent</em> untuk peluang karir.
             </div>
           </div>
         </div>
