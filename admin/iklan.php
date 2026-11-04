@@ -136,13 +136,13 @@ admin_nav('iklan.php', $user);
       <div>
         <h1 class="text-2xl font-extrabold text-brand-navy">Iklan &amp; Closing<?= $program ? ': ' . e(program_name($program)) : '' ?></h1>
         <p class="text-sm text-slate-500">Periode: <strong class="text-brand-navy"><?= e($rangeLabel) ?></strong>
-          <?php if ($program && $keywords): ?> · biaya iklan dari kampanye berisi "<?= e(implode('", "', $keywords)) ?>"<?php endif; ?>
+          <?php if ($program && $keywords): ?> · biaya iklan dari kampanye sesuai kata kunci: "<?= e(implode('", "', $keywords)) ?>"<?php endif; ?>
           <?php if ($program && !$keywords && $metaOn): ?> · <span class="text-amber-700">biaya iklan = semua kampanye (atur kata kunci kampanye di Pengaturan)</span><?php endif; ?>
         </p>
       </div>
       <form method="get" class="flex flex-wrap items-end gap-2">
         <select name="range" onchange="document.getElementById('customRange').classList.toggle('hidden', this.value !== 'custom'); if (this.value !== 'custom') this.form.submit();" class="px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white font-semibold">
-          <?php foreach ($presets as $k => [$label]): ?><option value="<?= $k ?>" <?= $range === $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
+          <?php foreach ($presets as $k => [$label]): ?><option value="<?= $k ?>" <?= (string) $range === (string) $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
           <option value="custom" <?= $range === 'custom' ? 'selected' : '' ?>>Pilih tanggal…</option>
         </select>
         <span id="customRange" class="<?= $range === 'custom' ? '' : 'hidden' ?> flex items-center gap-2">

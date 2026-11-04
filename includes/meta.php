@@ -135,11 +135,26 @@ function campaign_keywords(string $program): array
     return array_values(array_filter(array_map(fn($k) => mb_strtolower(trim($k)), explode(',', $raw)), 'strlen'));
 }
 
+/**
+ * Cocokkan nama kampanye dengan kata kunci program.
+ * Kata kunci biasa = kampanye harus mengandung salah satunya.
+ * Kata kunci diawali "-" = kampanye yang mengandungnya dikecualikan (misal "-testing wa").
+ */
 function campaign_matches(?string $campaign, array $keywords): bool
 {
     if (!$keywords) return true;
     $c = mb_strtolower((string) $campaign);
-    foreach ($keywords as $k) if (strpos($c, $k) !== false) return true;
+    $include = [];
+    foreach ($keywords as $k) {
+        if ($k[0] === '-') {
+            $ex = trim(substr($k, 1));
+            if ($ex !== '' && strpos($c, $ex) !== false) return false;
+        } else {
+            $include[] = $k;
+        }
+    }
+    if (!$include) return true;
+    foreach ($include as $k) if (strpos($c, $k) !== false) return true;
     return false;
 }
 
