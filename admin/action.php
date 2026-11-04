@@ -97,6 +97,19 @@ switch ($action) {
         }
         go($back ?: 'iklan.php');
 
+    case 'save_details':
+        $name = clean_text($_POST['name'] ?? '', 150);
+        $phone = clean_text($_POST['phone'] ?? '', 30);
+        $email = clean_text($_POST['email'] ?? '', 150);
+        if ($name === '' || !preg_match('/\d{6,}/', preg_replace('/\D+/', '', $phone))) {
+            flash('Nama dan nomor WhatsApp tidak boleh kosong.', 'error');
+            go($back ?: 'pendaftar.php');
+        }
+        db()->prepare('UPDATE registrations SET name = ?, phone = ?, email = ?, scheme = ? WHERE id = ?')
+            ->execute([$name, $phone, $email !== '' ? $email : '-', clean_text($_POST['scheme'] ?? '', 150) ?: null, $id]);
+        flash('Data "' . $name . '" disimpan.');
+        go($back ?: 'pendaftar.php');
+
     case 'save_notes':
         $notes = trim(mb_substr(str_replace("\r\n", "\n", (string) ($_POST['notes'] ?? '')), 0, 2000));
         db()->prepare('UPDATE registrations SET notes = ? WHERE id = ?')->execute([$notes !== '' ? $notes : null, $id]);

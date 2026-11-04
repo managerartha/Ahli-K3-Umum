@@ -38,12 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!is_program($program)) {
         $error = 'Pilih program.';
-    } elseif ($name === '' || !preg_match('/\d{6,}/', preg_replace('/\D+/', '', $phone))) {
-        $error = 'Nama dan nomor WhatsApp wajib diisi.';
+    } elseif (!preg_match('/\d{6,}/', preg_replace('/\D+/', '', $phone))) {
+        $error = 'Nomor WhatsApp wajib diisi (minimal 6 angka).';
     } elseif (!isset(LEAD_CHANNELS[$channel])) {
         $error = 'Pilih asal lead.';
     } else {
         if (preg_match('/^8\d{7,}$/', $phone)) $phone = '0' . $phone;
+        // Nama & email boleh kosong (lead WA sering belum membalas / tidak memberi email).
+        if ($name === '') $name = 'Lead WA (belum ada nama)';
+        if (!preg_match('/^[^@\s]+@[^@\s]+\.[^@\s]+$/', $email)) $email = '';
         $created = preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ? $date . ' ' . date('H:i:s') : now();
 
         // Cegah input dobel: nomor yang sama di program yang sama
@@ -130,16 +133,16 @@ admin_nav('pendaftar.php', $user, false);
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Nama <span class="text-red-500">*</span></label>
-          <input name="name" required value="<?= e($old['name'] ?? '') ?>" class="<?= input_class() ?>">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama <span class="text-slate-400 font-semibold">(opsional)</span></label>
+          <input name="name" placeholder="Nama di profil WA, boleh kosong" value="<?= e($old['name'] ?? '') ?>" class="<?= input_class() ?>">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
           <input name="phone" required inputmode="tel" placeholder="08..." value="<?= e($old['phone'] ?? '') ?>" class="<?= input_class() ?>">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
-          <input name="email" type="email" value="<?= e($old['email'] ?? '') ?>" class="<?= input_class() ?>">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email <span class="text-slate-400 font-semibold">(opsional)</span></label>
+          <input name="email" type="text" inputmode="email" autocomplete="off" placeholder="Boleh kosong" value="<?= e($old['email'] ?? '') ?>" class="<?= input_class() ?>">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal chat masuk</label>

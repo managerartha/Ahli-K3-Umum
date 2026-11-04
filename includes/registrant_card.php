@@ -44,6 +44,23 @@ function registrant_row(array $r, bool $withActions = true, bool $showProgram = 
           <p class="text-xs text-slate-700 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5 mt-2 whitespace-pre-line"><i class="fa-regular fa-note-sticky mr-1 text-amber-600"></i><?= e($r['notes']) ?></p>
         <?php endif; ?>
         <?php if ($withActions): ?>
+          <div class="flex flex-wrap gap-x-4">
+          <details class="mt-2">
+            <summary class="text-[11px] font-bold text-brand-blue hover:text-brand-navy cursor-pointer select-none list-none">
+              <i class="fa-regular fa-id-card mr-0.5"></i>Edit data
+            </summary>
+            <form method="post" action="action.php" class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-xl">
+              <?= csrf_field() ?>
+              <input type="hidden" name="action" value="save_details">
+              <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+              <input type="hidden" name="back" value="<?= e($_SERVER['REQUEST_URI'] ?? 'pendaftar.php') ?>">
+              <input name="name" required maxlength="150" value="<?= e($r['name']) ?>" placeholder="Nama" class="px-3 py-2 rounded-xl border border-slate-300 text-xs">
+              <input name="phone" required maxlength="30" value="<?= e($r['phone']) ?>" placeholder="Nomor WhatsApp" class="px-3 py-2 rounded-xl border border-slate-300 text-xs">
+              <input name="email" maxlength="150" value="<?= e($r['email'] === '-' ? '' : $r['email']) ?>" placeholder="Email (opsional)" class="px-3 py-2 rounded-xl border border-slate-300 text-xs">
+              <input name="scheme" maxlength="150" value="<?= e($r['scheme'] ?? '') ?>" placeholder="Skema (opsional)" class="px-3 py-2 rounded-xl border border-slate-300 text-xs">
+              <button class="justify-self-start bg-brand-navy hover:bg-brand-blue text-white font-bold text-xs px-4 py-2 rounded-xl">Simpan</button>
+            </form>
+          </details>
           <details class="mt-2 group/notes">
             <summary class="text-[11px] font-bold text-brand-blue hover:text-brand-navy cursor-pointer select-none list-none">
               <i class="fa-regular fa-pen-to-square mr-0.5"></i><?= empty($r['notes']) ? 'Tambah catatan' : 'Edit catatan' ?>
@@ -57,6 +74,7 @@ function registrant_row(array $r, bool $withActions = true, bool $showProgram = 
               <button class="self-start bg-brand-navy hover:bg-brand-blue text-white font-bold text-xs px-4 py-2 rounded-xl">Simpan</button>
             </form>
           </details>
+          </div>
         <?php endif; ?>
       </div>
       <div class="flex items-center gap-2 shrink-0">
