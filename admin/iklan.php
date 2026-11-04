@@ -38,14 +38,14 @@ $adInfo = []; // nama & kampanye semua iklan (termasuk di luar filter program), 
 foreach ($pdo->query('SELECT ad_id, ad_name, campaign_name FROM ad_insights GROUP BY ad_id') as $a) {
     $adInfo[$a['ad_id']] = ['name' => $a['ad_name'], 'campaign' => $a['campaign_name']];
 }
-$stmt = $pdo->prepare('SELECT ad_id, ad_name, adset_name, campaign_name, SUM(spend) spend, SUM(clicks) clicks, SUM(impressions) impressions
+$stmt = $pdo->prepare('SELECT ad_id, ad_name, adset_name, campaign_name, SUM(spend) spend, SUM(clicks) clicks, SUM(impressions) impressions, SUM(messaging) messaging
                        FROM ad_insights WHERE day >= ? AND day <= ? GROUP BY ad_id');
 $stmt->execute([$from, $to]);
 foreach ($stmt as $a) {
     if (!campaign_matches($a['campaign_name'], $keywords)) continue;
     $ads[$a['ad_id']] = [
         'name' => $a['ad_name'], 'campaign' => $a['campaign_name'], 'adset' => $a['adset_name'],
-        'spend' => (float) $a['spend'], 'clicks' => (int) $a['clicks'], 'impressions' => (int) $a['impressions'],
+        'spend' => (float) $a['spend'], 'clicks' => (int) $a['clicks'], 'impressions' => (int) $a['impressions'], 'messaging' => (int) $a['messaging'],
     ];
 }
 $adIdByName = [];
@@ -53,13 +53,13 @@ foreach ($ads as $id => $a) if ($a['name'] !== null) $adIdByName[mb_strtolower($
 
 /* ---------- Lead ---------- */
 $pw = $program ? ' AND program = ?' : '';
-$stmt = $pdo->prepare("SELECT temperature, closing, ad_id, utm_content, utm_campaign, utm_source FROM registrations WHERE created_at >= ? AND created_at <= ?$pw");
+$stmt = $pdo->prepare("SELECT temperature, closing, ad_id, utm_content, utm_campaign, utm_source, source FROM registrations WHERE created_at >= ? AND created_at <= ?$pw");
 $stmt->execute(array_merge([$from . ' 00:00:00', $to . ' 23:59:59'], $program ? [$program] : []));
 $leads = $stmt->fetchAll();
 
 $emptyRow = fn() => ['leads' => 0, 'hot' => 0, 'warm' => 0, 'cold' => 0, 'closing' => 0, 'visitors' => 0];
 $rows = [];   // per iklan
-$tot = ['leads' => 0, 'hot' => 0, 'warm' => 0, 'cold' => 0, 'unrated' => 0, 'closing' => 0, 'not_closing' => 0, 'from_ads' => 0];
+$tot = ['leads' => 0, 'hot' => 0, 'warm' => 0, 'cold' => 0, 'unrated' => 0, 'closing' => 0, 'not_closing' => 0, 'from_ads' => 0, 'wa' => 0];
 
 foreach ($leads as $l) {
     $key = 'none';
@@ -79,6 +79,7 @@ foreach ($leads as $l) {
     if ($l['closing'] === 'ya') $tot['closing']++;
     if ($l['closing'] === 'tidak') $tot['not_closing']++;
     if ($key !== 'none') $tot['from_ads']++;
+    if ($l['source'] === 'manual') $tot['wa']++;
 }
 
 // Pengunjung landing page per iklan
@@ -104,6 +105,7 @@ foreach ($rows as $key => $r) {
         'campaign' => $ad['campaign'] ?? $info['campaign'] ?? null,
         'spend'    => $ad['spend'] ?? null,
         'clicks'   => $ad['clicks'] ?? null,
+        'messaging' => $ad['messaging'] ?? null,
     ];
 }
 usort($table, fn($a, $b) => [($b['spend'] ?? -1), $b['leads']] <=> [($a['spend'] ?? -1), $a['leads']]);
@@ -111,6 +113,7 @@ $noneRow = $rows['none'] ?? null;
 
 $spend = array_sum(array_column($ads, 'spend'));
 $clicks = array_sum(array_column($ads, 'clicks'));
+$chats = array_sum(array_column($ads, 'messaging'));
 
 function str_starts_with_compat(string $h, string $n): bool
 {
@@ -176,8 +179,8 @@ admin_nav('iklan.php', $user);
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
       <?php
       $cards = [
-          ['Biaya iklan', $metaOn ? rp($spend) : '–', $metaOn ? number_format($clicks, 0, ',', '.') . ' klik link' : 'belum terhubung', 'text-brand-navy'],
-          ['Lead', number_format($tot['leads'], 0, ',', '.'), $tot['from_ads'] . ' tercatat dari iklan', 'text-brand-navy'],
+          ['Biaya iklan', $metaOn ? rp($spend) : '–', $metaOn ? number_format($clicks, 0, ',', '.') . ' klik link · ' . number_format($chats, 0, ',', '.') . ' chat WA' : 'belum terhubung', 'text-brand-navy'],
+          ['Lead', number_format($tot['leads'], 0, ',', '.'), $tot['from_ads'] . ' tercatat dari iklan' . ($tot['wa'] ? ' · ' . $tot['wa'] . ' input WA' : ''), 'text-brand-navy'],
           ['CPL', $metaOn && $tot['leads'] ? rp($spend / $tot['leads']) : '–', 'biaya per lead', 'text-brand-blue'],
           ['Closing', number_format($tot['closing'], 0, ',', '.'), $tot['not_closing'] . ' tidak closing', 'text-emerald-600'],
           ['CPA', $metaOn && $tot['closing'] ? rp($spend / $tot['closing']) : '–', 'biaya per closing', 'text-brand-blue'],
@@ -213,7 +216,7 @@ admin_nav('iklan.php', $user);
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
       <div class="px-5 py-4 border-b border-slate-100">
         <h2 class="text-sm font-extrabold text-brand-navy">Performa per iklan (konten)</h2>
-        <p class="text-[11px] text-slate-500 mt-0.5">Lead dikenali dari parameter URL di link iklan. Lihat <a href="pengaturan.php#meta" class="font-bold text-brand-blue">Pengaturan</a> untuk teks parameter yang perlu dipasang di Ads Manager.</p>
+        <p class="text-[11px] text-slate-500 mt-0.5">Lead dari landing page dikenali dari parameter URL di link iklan (lihat <a href="pengaturan.php#meta" class="font-bold text-brand-blue">Pengaturan</a>). Lead dari iklan WhatsApp dicatat lewat tombol <a href="tambah.php" class="font-bold text-emerald-700">Tambah Lead WA</a>. Kolom <em>Chat WA</em> = jumlah chat yang dimulai dari iklan menurut Meta.</p>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-xs sm:text-sm">
@@ -222,6 +225,7 @@ admin_nav('iklan.php', $user);
               <th class="px-4 py-2.5 font-bold min-w-[220px]">Iklan</th>
               <th class="px-3 py-2.5 font-bold text-right">Biaya</th>
               <th class="px-3 py-2.5 font-bold text-right">Klik</th>
+              <th class="px-3 py-2.5 font-bold text-right" title="Percakapan WhatsApp yang dimulai dari iklan (data Meta)">Chat WA</th>
               <th class="px-3 py-2.5 font-bold text-right" title="Pengunjung landing page dari iklan ini">Pengunjung</th>
               <th class="px-3 py-2.5 font-bold text-right">Lead</th>
               <th class="px-3 py-2.5 font-bold text-center">Hot / Warm / Cold</th>
@@ -232,7 +236,7 @@ admin_nav('iklan.php', $user);
           </thead>
           <tbody class="divide-y divide-slate-100">
             <?php if (!$table && !$noneRow): ?>
-              <tr><td colspan="9" class="px-4 py-8 text-center text-slate-400">Belum ada data pada periode ini.</td></tr>
+              <tr><td colspan="10" class="px-4 py-8 text-center text-slate-400">Belum ada data pada periode ini.</td></tr>
             <?php endif; ?>
             <?php foreach ($table as $r): ?>
               <tr class="hover:bg-slate-50/70">
@@ -242,6 +246,7 @@ admin_nav('iklan.php', $user);
                 </td>
                 <td class="px-3 py-2.5 text-right whitespace-nowrap"><?= rp($r['spend']) ?></td>
                 <td class="px-3 py-2.5 text-right"><?= $r['clicks'] ?? '–' ?></td>
+                <td class="px-3 py-2.5 text-right"><?= $r['messaging'] ?: '–' ?></td>
                 <td class="px-3 py-2.5 text-right"><?= $r['visitors'] ?: '–' ?></td>
                 <td class="px-3 py-2.5 text-right font-bold"><?= $r['leads'] ?: '–' ?></td>
                 <td class="px-3 py-2.5 text-center whitespace-nowrap">
@@ -258,6 +263,7 @@ admin_nav('iklan.php', $user);
                   <p class="font-bold text-slate-600">Tanpa data iklan</p>
                   <p class="text-[11px] text-slate-400">Organik, link tanpa parameter, data impor, atau iklan sebelum parameter dipasang</p>
                 </td>
+                <td class="px-3 py-2.5 text-right">–</td>
                 <td class="px-3 py-2.5 text-right">–</td>
                 <td class="px-3 py-2.5 text-right">–</td>
                 <td class="px-3 py-2.5 text-right">–</td>

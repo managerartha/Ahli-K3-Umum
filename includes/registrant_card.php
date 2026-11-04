@@ -18,6 +18,8 @@ function registrant_row(array $r, bool $withActions = true, bool $showProgram = 
           </span>
           <?php if (($r['source'] ?? 'form') === 'impor'): ?>
             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500" title="Diimpor dari file CSV">Impor</span>
+          <?php elseif (($r['source'] ?? 'form') === 'manual'): ?>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700" title="Diinput manual dari dashboard"><?= ($r['utm_source'] ?? '') === 'whatsapp' ? '<i class="fa-brands fa-whatsapp mr-0.5"></i>Lead WA' : 'Input manual' ?></span>
           <?php endif; ?>
           <?php if ($showProgram): ?>
             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-subtle text-brand-blue"><?= e(program_name($r['program'])) ?></span>

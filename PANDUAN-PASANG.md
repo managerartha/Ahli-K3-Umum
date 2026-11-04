@@ -204,15 +204,16 @@ Setelah ini, biaya iklan diperbarui otomatis setiap 3 jam saat halaman Iklan & C
 
 Jika akun **Artha GM** hanya dipakai untuk iklan landing page Ahli K3 Umum, **langkah ini boleh dilewati** (kosongkan = semua kampanye dihitung).
 
-Jika di akun itu ada kampanye untuk pelatihan lain atau kampanye klik ke WhatsApp, isi kata kunci supaya biayanya tidak ikut terhitung:
+Jika di akun itu ada kampanye untuk **pelatihan lain**, isi kata kunci supaya biayanya tidak ikut terhitung.
+Kampanye **klik ke WhatsApp** untuk Ahli K3 Umum tetap dihitung, karena lead-nya dicatat lewat tombol **Tambah Lead WA** (lihat B6).
 
 1. Dashboard → **Pengaturan** → kartu **Ahli K3 Umum Kemnaker RI** → kolom **Kata kunci nama kampanye Meta**.
 2. Isi bagian nama kampanye yang khusus untuk landing page ini, pisahkan dengan koma. Contoh:
    ```
    AK3U Web, Landing AK3U
    ```
-   Tips: beri nama kampanye landing page dengan kata yang sama (misalnya selalu diawali `AK3U Web`), supaya mudah dikenali.
-   Kampanye **klik ke WhatsApp** sebaiknya **tidak** dimasukkan, karena lead-nya tidak lewat landing page.
+   Tips: beri nama kampanye setiap program dengan kata yang sama (misalnya selalu mengandung `AK3U`), supaya mudah dikenali.
+   Untuk **mengecualikan** kampanye, awali dengan tanda minus, misalnya `-BNSP`.
 3. Klik **Simpan**.
 
 ## B5. Pasang parameter URL di iklan
@@ -236,12 +237,30 @@ Catatan:
 - Iklan baru: tempel parameter yang sama setiap kali membuat iklan.
 - Lead sebelum parameter dipasang akan tampil di baris **"Tanpa data iklan"**.
 
+## B6. Mencatat lead dari iklan WhatsApp (klik ke WA)
+
+Iklan klik-ke-WhatsApp tidak lewat landing page, jadi nama dan nomor pengirim chat tidak tercatat otomatis.
+Yang tercatat otomatis dari Meta hanya **jumlah chat yang dimulai** (kolom **Chat WA** di tabel per iklan).
+
+Setiap ada chat masuk dari iklan:
+
+1. Dashboard → **Pendaftar** → tombol hijau **Tambah Lead WA**.
+2. Pilih **Dari iklan**. Iklan yang punya chat WA ada di urutan paling atas. Cocokkan dengan pratinjau iklan yang biasanya muncul di pesan pertama WhatsApp.
+3. Isi **Nama** dan **Nomor WhatsApp**. Field lain boleh diisi nanti.
+4. Klik **Simpan Lead**, atau **Simpan & Tambah Lagi** jika ada beberapa chat sekaligus (iklan yang sama otomatis terpilih lagi).
+
+Setelah itu lead WA muncul di daftar Pendaftar dengan label **Lead WA**, dan bisa ditandai Cold/Warm/Hot dan Closing seperti lead dari form.
+Nomor yang sudah pernah terdaftar akan diperingatkan supaya tidak dobel.
+
+Lead WA **tidak** dihitung dalam konversi landing page (karena tidak lewat landing page), tetapi **dihitung** dalam Lead, CPL, CPA, dan closing rate di halaman Iklan & Closing.
+
 ## Cara membaca halaman Iklan & Closing
 
 | Angka | Artinya |
 |---|---|
 | **Biaya iklan** | Total belanja iklan Meta pada periode itu (sesuai kata kunci kampanye program) |
-| **Lead** | Jumlah pendaftar pada periode itu (termasuk data impor) |
+| **Lead** | Jumlah pendaftar pada periode itu (dari form, lead WA, dan data impor) |
+| **Chat WA** | Jumlah percakapan WhatsApp yang dimulai dari iklan, menurut Meta |
 | **CPL** | Biaya iklan ÷ lead |
 | **Closing** | Jumlah pendaftar yang kamu tandai **Closing** |
 | **CPA** | Biaya iklan ÷ closing |

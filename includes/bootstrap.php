@@ -88,6 +88,7 @@ function migrate(PDO $pdo): void
             spend REAL NOT NULL DEFAULT 0,
             impressions INTEGER NOT NULL DEFAULT 0,
             clicks INTEGER NOT NULL DEFAULT 0,
+            messaging INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY (day, ad_id)
         );
         CREATE TABLE IF NOT EXISTS settings (
@@ -108,6 +109,7 @@ function migrate(PDO $pdo): void
             'utm_medium' => 'TEXT', 'utm_content' => 'TEXT', 'utm_term' => 'TEXT', 'ad_id' => 'TEXT',
         ],
         'visits' => ['program' => "TEXT NOT NULL DEFAULT $default", 'utm_content' => 'TEXT', 'ad_id' => 'TEXT'],
+        'ad_insights' => ['messaging' => 'INTEGER NOT NULL DEFAULT 0'],
     ];
     foreach ($addColumns as $table => $columns) {
         $existing = array_column($pdo->query("PRAGMA table_info($table)")->fetchAll(), 'name');

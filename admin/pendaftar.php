@@ -35,7 +35,10 @@ admin_nav('pendaftar.php', $user);
         <h1 class="text-2xl font-extrabold text-brand-navy">Pendaftar<?= $program ? ': ' . e(program_name($program)) : '' ?></h1>
         <p class="text-sm text-slate-500"><?= $total ?> data<?= $hasFilter ? ' sesuai filter' : '' ?><?= $program ? '' : ' dari semua program' ?>. Klik tombol hijau untuk chat WhatsApp langsung.</p>
       </div>
-      <div class="flex gap-2 self-start sm:self-auto">
+      <div class="flex flex-wrap gap-2 self-start sm:self-auto">
+        <a href="tambah.php" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl">
+          <i class="fa-brands fa-whatsapp"></i> Tambah Lead WA
+        </a>
         <a href="impor.php" class="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-xs px-3.5 py-2 rounded-xl">
           <i class="fa-solid fa-file-import"></i> Impor CSV
         </a>

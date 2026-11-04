@@ -38,7 +38,7 @@ foreach ($periods as $label => $since) {
     $stats[$label] = [
         'visitors' => $visitors,
         'visits'   => scalar($pdo, "SELECT COUNT(*) FROM visits WHERE day >= ?$pw", array_merge([$since], $pp)),
-        'imported' => scalar($pdo, "SELECT COUNT(*) FROM registrations WHERE source = 'impor' AND created_at >= ?$pw", array_merge([$since . ' 00:00:00'], $pp)),
+        'imported' => scalar($pdo, "SELECT COUNT(*) FROM registrations WHERE source != 'form' AND created_at >= ?$pw", array_merge([$since . ' 00:00:00'], $pp)),
         'regs'     => $regs,
         'rate'     => $visitors > 0 ? round($regs / $visitors * 100, 1) : 0,
     ];
@@ -123,7 +123,7 @@ admin_nav('index.php', $user);
               <p class="text-[11px] text-slate-500 font-semibold">Konversi</p>
             </div>
           </div>
-          <p class="text-[11px] text-slate-400 mt-3"><?= number_format($s['visits'], 0, ',', '.') ?> kunjungan<?php if ($s['imported']): ?> · <span title="Data impor tidak dihitung dalam pendaftar & konversi karena tidak ada data kunjungannya">+<?= $s['imported'] ?> data impor (tidak dihitung)</span><?php endif; ?></p>
+          <p class="text-[11px] text-slate-400 mt-3"><?= number_format($s['visits'], 0, ',', '.') ?> kunjungan<?php if ($s['imported']): ?> · <span title="Lead dari impor CSV atau input manual (misal chat WA langsung dari iklan) tidak lewat landing page, jadi tidak dihitung dalam konversi landing page">+<?= $s['imported'] ?> lead impor/WA (tidak dihitung)</span><?php endif; ?></p>
         </div>
       <?php endforeach; ?>
     </div>

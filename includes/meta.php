@@ -69,7 +69,7 @@ function meta_sync(): int
 
     $url = meta_graph_base() . '/act_' . $account . '/insights?' . http_build_query([
         'level'          => 'ad',
-        'fields'         => 'ad_id,ad_name,adset_name,campaign_name,spend,impressions,inline_link_clicks',
+        'fields'         => 'ad_id,ad_name,adset_name,campaign_name,spend,impressions,inline_link_clicks,actions',
         'time_increment' => 1,
         'time_range'     => json_encode(['since' => $since, 'until' => $until]),
         'limit'          => 500,
@@ -88,9 +88,16 @@ function meta_sync(): int
         $pdo = db();
         $pdo->beginTransaction();
         $pdo->prepare('DELETE FROM ad_insights WHERE day >= ? AND day <= ?')->execute([$since, $until]);
-        $ins = $pdo->prepare('INSERT OR REPLACE INTO ad_insights (day, ad_id, ad_name, adset_name, campaign_name, spend, impressions, clicks)
-                              VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $ins = $pdo->prepare('INSERT OR REPLACE INTO ad_insights (day, ad_id, ad_name, adset_name, campaign_name, spend, impressions, clicks, messaging)
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
         foreach ($rows as $r) {
+            // Jumlah percakapan WhatsApp/Messenger yang dimulai dari iklan (iklan klik-ke-WhatsApp).
+            $messaging = 0;
+            foreach ($r['actions'] ?? [] as $act) {
+                if (($act['action_type'] ?? '') === 'onsite_conversion.messaging_conversation_started_7d') {
+                    $messaging = (int) round((float) ($act['value'] ?? 0));
+                }
+            }
             $ins->execute([
                 $r['date_start'] ?? $since,
                 (string) ($r['ad_id'] ?? ''),
@@ -100,6 +107,7 @@ function meta_sync(): int
                 (float) ($r['spend'] ?? 0),
                 (int) ($r['impressions'] ?? 0),
                 (int) ($r['inline_link_clicks'] ?? 0),
+                $messaging,
             ]);
         }
         $pdo->commit();
