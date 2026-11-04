@@ -22,7 +22,8 @@ tanpa Google Apps Script atau Spreadsheet.
 |---|---|
 | **Ringkasan** | Pengunjung, pendaftar, konversi (hari ini / 7 / 30 hari), perbandingan per program, grafik 14 hari, sumber kunjungan, pendaftar terbaru |
 | **Pendaftar** | Semua data form, cari & filter, tombol WhatsApp langsung, tombol Cold/Warm/Hot & Closing, catatan, impor & unduh CSV |
-| **Pengaturan** | Tanggal batch & template pesan WhatsApp per program, ganti password |
+| **Iklan & Closing** | Biaya iklan Meta, CPL, CPA, closing rate, kualitas lead (cold/warm/hot), performa per iklan |
+| **Pengaturan** | Tanggal batch, template WhatsApp, kata kunci kampanye per program, koneksi Meta Ads, ganti password |
 
 Pilihan program di kanan atas dashboard: **Semua program** atau satu program tertentu.
 
