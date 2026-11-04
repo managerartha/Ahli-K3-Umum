@@ -16,6 +16,9 @@ function registrant_row(array $r, bool $withActions = true, bool $showProgram = 
           <span data-status-badge class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full <?= $contacted ? 'bg-slate-100 text-slate-500' : 'bg-brand-accent text-brand-dark' ?>">
             <?= $contacted ? 'Sudah dihubungi' : 'Baru' ?>
           </span>
+          <?php if (($r['source'] ?? 'form') === 'impor'): ?>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500" title="Diimpor dari file CSV">Impor</span>
+          <?php endif; ?>
           <?php if ($showProgram): ?>
             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-subtle text-brand-blue"><?= e(program_name($r['program'])) ?></span>
           <?php endif; ?>

@@ -29,13 +29,16 @@ $periods = [
     '30 hari'  => date('Y-m-d', strtotime('-29 days')),
 ];
 
+// Konversi hanya menghitung pendaftar dari form landing page (source = 'form').
+// Data hasil impor (misal dari spreadsheet lama) tidak punya data kunjungan, jadi ditampilkan terpisah.
 $stats = [];
 foreach ($periods as $label => $since) {
     $visitors = scalar($pdo, "SELECT COUNT(DISTINCT visitor_id) FROM visits WHERE day >= ?$pw", array_merge([$since], $pp));
-    $regs     = scalar($pdo, "SELECT COUNT(*) FROM registrations WHERE created_at >= ?$pw", array_merge([$since . ' 00:00:00'], $pp));
+    $regs     = scalar($pdo, "SELECT COUNT(*) FROM registrations WHERE source = 'form' AND created_at >= ?$pw", array_merge([$since . ' 00:00:00'], $pp));
     $stats[$label] = [
         'visitors' => $visitors,
         'visits'   => scalar($pdo, "SELECT COUNT(*) FROM visits WHERE day >= ?$pw", array_merge([$since], $pp)),
+        'imported' => scalar($pdo, "SELECT COUNT(*) FROM registrations WHERE source = 'impor' AND created_at >= ?$pw", array_merge([$since . ' 00:00:00'], $pp)),
         'regs'     => $regs,
         'rate'     => $visitors > 0 ? round($regs / $visitors * 100, 1) : 0,
     ];
@@ -50,7 +53,7 @@ $since14 = array_key_first($days);
 $stmt = $pdo->prepare("SELECT day, COUNT(DISTINCT visitor_id) c FROM visits WHERE day >= ?$pw GROUP BY day");
 $stmt->execute(array_merge([$since14], $pp));
 foreach ($stmt as $row) if (isset($days[$row['day']])) $days[$row['day']]['v'] = (int) $row['c'];
-$stmt = $pdo->prepare("SELECT substr(created_at, 1, 10) d, COUNT(*) c FROM registrations WHERE created_at >= ?$pw GROUP BY d");
+$stmt = $pdo->prepare("SELECT substr(created_at, 1, 10) d, COUNT(*) c FROM registrations WHERE source = 'form' AND created_at >= ?$pw GROUP BY d");
 $stmt->execute(array_merge([$since14 . ' 00:00:00'], $pp));
 foreach ($stmt as $row) if (isset($days[$row['d']])) $days[$row['d']]['r'] = (int) $row['c'];
 $maxV = max(1, max(array_column($days, 'v')), max(array_column($days, 'r')));
@@ -73,7 +76,7 @@ $perProgram = [];
 if (!$program && count(PROGRAMS) > 1) {
     foreach (PROGRAMS as $slug => $prog) {
         $v = scalar($pdo, 'SELECT COUNT(DISTINCT visitor_id) FROM visits WHERE day >= ? AND program = ?', [$periods['30 hari'], $slug]);
-        $r = scalar($pdo, 'SELECT COUNT(*) FROM registrations WHERE created_at >= ? AND program = ?', [$periods['30 hari'] . ' 00:00:00', $slug]);
+        $r = scalar($pdo, "SELECT COUNT(*) FROM registrations WHERE source = 'form' AND created_at >= ? AND program = ?", [$periods['30 hari'] . ' 00:00:00', $slug]);
         $perProgram[$slug] = ['visitors' => $v, 'regs' => $r, 'rate' => $v ? round($r / $v * 100, 1) : 0];
     }
 }
@@ -120,7 +123,7 @@ admin_nav('index.php', $user);
               <p class="text-[11px] text-slate-500 font-semibold">Konversi</p>
             </div>
           </div>
-          <p class="text-[11px] text-slate-400 mt-3"><?= number_format($s['visits'], 0, ',', '.') ?> kunjungan</p>
+          <p class="text-[11px] text-slate-400 mt-3"><?= number_format($s['visits'], 0, ',', '.') ?> kunjungan<?php if ($s['imported']): ?> · <span title="Data impor tidak dihitung dalam pendaftar & konversi karena tidak ada data kunjungannya">+<?= $s['imported'] ?> data impor (tidak dihitung)</span><?php endif; ?></p>
         </div>
       <?php endforeach; ?>
     </div>

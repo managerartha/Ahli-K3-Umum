@@ -90,8 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $known = array_flip($map);
             $pdo = db();
             $exists = $pdo->prepare('SELECT 1 FROM registrations WHERE program = ? AND phone = ? AND created_at = ? LIMIT 1');
-            $insert = $pdo->prepare('INSERT INTO registrations (program, created_at, name, phone, email, goal, scheme, status, contacted_at, notes)
-                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            $insert = $pdo->prepare('INSERT INTO registrations (program, created_at, name, phone, email, goal, scheme, status, contacted_at, notes, source)
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $result = ['imported' => 0, 'duplicate' => 0, 'skipped' => []];
 
             $pdo->beginTransaction();
@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $contacted ? 'dihubungi' : 'baru',
                     $contacted ? $created : null,
                     $notesText,
+                    'impor',
                 ]);
                 $result['imported']++;
             }

@@ -58,7 +58,8 @@ function migrate(PDO $pdo): void
             utm_source TEXT,
             utm_campaign TEXT,
             ip_hash TEXT,
-            notes TEXT
+            notes TEXT,
+            source TEXT NOT NULL DEFAULT 'form'
         );
         CREATE TABLE IF NOT EXISTS visits (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,7 +83,7 @@ function migrate(PDO $pdo): void
 
     // Tambahkan kolom baru ke database dari versi sebelumnya.
     $addColumns = [
-        'registrations' => ['program' => "TEXT NOT NULL DEFAULT $default", 'notes' => 'TEXT'],
+        'registrations' => ['program' => "TEXT NOT NULL DEFAULT $default", 'notes' => 'TEXT', 'source' => "TEXT NOT NULL DEFAULT 'form'"],
         'visits'        => ['program' => "TEXT NOT NULL DEFAULT $default"],
     ];
     foreach ($addColumns as $table => $columns) {
@@ -90,6 +91,11 @@ function migrate(PDO $pdo): void
         foreach ($columns as $col => $def) {
             if (!in_array($col, $existing, true)) {
                 $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def");
+                // Data yang sudah diimpor sebelum kolom "source" ada: hanya data impor
+                // yang tidak punya ip_hash (form landing page selalu mengisinya).
+                if ($table === 'registrations' && $col === 'source') {
+                    $pdo->exec("UPDATE registrations SET source = 'impor' WHERE ip_hash IS NULL");
+                }
             }
         }
     }
