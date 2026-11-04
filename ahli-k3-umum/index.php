@@ -2808,14 +2808,17 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
     var SPREADSHEET_WEBHOOK_URL = '../api/submit.php';
     var LANDING_PROGRAM = <?= json_encode($PROGRAM) ?>;
 
-    // Sumber kunjungan dari iklan/link (utm_source & utm_campaign), disimpan selama sesi
+    // Sumber kunjungan dari iklan/link (parameter utm_* & ad_id di link iklan), disimpan selama sesi
     var trafficSource = (function() {
-      var src = { utm_source: '', utm_campaign: '' };
+      var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ad_id'];
+      var src = {};
+      keys.forEach(function(k) { src[k] = ''; });
       try {
         var params = new URLSearchParams(window.location.search);
         var saved = JSON.parse(sessionStorage.getItem('artha_utm') || '{}');
-        src.utm_source = params.get('utm_source') || saved.utm_source || '';
-        src.utm_campaign = params.get('utm_campaign') || saved.utm_campaign || '';
+        // Jika datang dari link iklan baru, pakai semua parameter dari link itu.
+        var fromUrl = keys.some(function(k) { return params.get(k); });
+        keys.forEach(function(k) { src[k] = (fromUrl ? params.get(k) : saved[k]) || ''; });
         sessionStorage.setItem('artha_utm', JSON.stringify(src));
       } catch (err) {}
       return src;
@@ -2829,7 +2832,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
           vid = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
           localStorage.setItem('artha_vid', vid);
         }
-        var body = JSON.stringify({ program: LANDING_PROGRAM, vid: vid, ref: document.referrer, utm_source: trafficSource.utm_source, utm_campaign: trafficSource.utm_campaign });
+        var body = JSON.stringify({ program: LANDING_PROGRAM, vid: vid, ref: document.referrer, utm_source: trafficSource.utm_source, utm_campaign: trafficSource.utm_campaign, utm_content: trafficSource.utm_content, ad_id: trafficSource.ad_id });
         fetch('../api/track.php', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body, keepalive: true }).catch(function(){});
       } catch (err) {}
     })();
@@ -3042,7 +3045,11 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         goal: goal,
         scheme: scheme,
         utm_source: trafficSource.utm_source,
-        utm_campaign: trafficSource.utm_campaign
+        utm_medium: trafficSource.utm_medium,
+        utm_campaign: trafficSource.utm_campaign,
+        utm_term: trafficSource.utm_term,
+        utm_content: trafficSource.utm_content,
+        ad_id: trafficSource.ad_id
       };
 
       // 1. Meta Pixel Event Tracking (Lead)

@@ -25,7 +25,7 @@ $stmt->execute($params);
 $rows = $stmt->fetchAll();
 
 $qs = fn(array $extra) => http_build_query(array_filter(array_merge(array_diff_key($f, ['program' => 1]), $extra), fn($v) => $v !== '' && $v !== null));
-$hasFilter = $f['q'] !== '' || $f['status'] !== '' || $f['from'] !== '' || $f['to'] !== '';
+$hasFilter = $f['q'] !== '' || $f['status'] !== '' || $f['from'] !== '' || $f['to'] !== '' || $f['lead'] !== '' || $f['hasil'] !== '';
 
 admin_head('Pendaftar');
 admin_nav('pendaftar.php', $user);
@@ -56,6 +56,24 @@ admin_nav('pendaftar.php', $user);
           <option value="">Semua</option>
           <option value="baru" <?= $f['status'] === 'baru' ? 'selected' : '' ?>>Baru</option>
           <option value="dihubungi" <?= $f['status'] === 'dihubungi' ? 'selected' : '' ?>>Sudah dihubungi</option>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-[11px] font-bold text-slate-600 mb-1">Lead</label>
+        <select name="lead" class="<?= input_class() ?> bg-white">
+          <option value="">Semua</option>
+          <?php foreach (['hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold', 'belum' => 'Belum dinilai'] as $v => $l): ?>
+            <option value="<?= $v ?>" <?= $f['lead'] === $v ? 'selected' : '' ?>><?= $l ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-[11px] font-bold text-slate-600 mb-1">Hasil</label>
+        <select name="hasil" class="<?= input_class() ?> bg-white">
+          <option value="">Semua</option>
+          <?php foreach (['ya' => 'Closing', 'tidak' => 'Tidak closing', 'belum' => 'Belum ada hasil'] as $v => $l): ?>
+            <option value="<?= $v ?>" <?= $f['hasil'] === $v ? 'selected' : '' ?>><?= $l ?></option>
+          <?php endforeach; ?>
         </select>
       </div>
       <div class="md:col-span-2">

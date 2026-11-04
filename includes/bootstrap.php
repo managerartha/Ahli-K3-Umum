@@ -59,7 +59,13 @@ function migrate(PDO $pdo): void
             utm_campaign TEXT,
             ip_hash TEXT,
             notes TEXT,
-            source TEXT NOT NULL DEFAULT 'form'
+            source TEXT NOT NULL DEFAULT 'form',
+            temperature TEXT,
+            closing TEXT,
+            utm_medium TEXT,
+            utm_content TEXT,
+            utm_term TEXT,
+            ad_id TEXT
         );
         CREATE TABLE IF NOT EXISTS visits (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,7 +75,20 @@ function migrate(PDO $pdo): void
             visitor_id TEXT NOT NULL,
             referrer TEXT,
             utm_source TEXT,
-            utm_campaign TEXT
+            utm_campaign TEXT,
+            utm_content TEXT,
+            ad_id TEXT
+        );
+        CREATE TABLE IF NOT EXISTS ad_insights (
+            day TEXT NOT NULL,
+            ad_id TEXT NOT NULL,
+            ad_name TEXT,
+            adset_name TEXT,
+            campaign_name TEXT,
+            spend REAL NOT NULL DEFAULT 0,
+            impressions INTEGER NOT NULL DEFAULT 0,
+            clicks INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (day, ad_id)
         );
         CREATE TABLE IF NOT EXISTS settings (
             key TEXT PRIMARY KEY,
@@ -83,8 +102,12 @@ function migrate(PDO $pdo): void
 
     // Tambahkan kolom baru ke database dari versi sebelumnya.
     $addColumns = [
-        'registrations' => ['program' => "TEXT NOT NULL DEFAULT $default", 'notes' => 'TEXT', 'source' => "TEXT NOT NULL DEFAULT 'form'"],
-        'visits'        => ['program' => "TEXT NOT NULL DEFAULT $default"],
+        'registrations' => [
+            'program' => "TEXT NOT NULL DEFAULT $default", 'notes' => 'TEXT', 'source' => "TEXT NOT NULL DEFAULT 'form'",
+            'temperature' => 'TEXT', 'closing' => 'TEXT',
+            'utm_medium' => 'TEXT', 'utm_content' => 'TEXT', 'utm_term' => 'TEXT', 'ad_id' => 'TEXT',
+        ],
+        'visits' => ['program' => "TEXT NOT NULL DEFAULT $default", 'utm_content' => 'TEXT', 'ad_id' => 'TEXT'],
     ];
     foreach ($addColumns as $table => $columns) {
         $existing = array_column($pdo->query("PRAGMA table_info($table)")->fetchAll(), 'name');
@@ -95,6 +118,14 @@ function migrate(PDO $pdo): void
                 // yang tidak punya ip_hash (form landing page selalu mengisinya).
                 if ($table === 'registrations' && $col === 'source') {
                     $pdo->exec("UPDATE registrations SET source = 'impor' WHERE ip_hash IS NULL");
+                }
+                // Isi Cold/Warm/Hot & Closing dari catatan hasil impor spreadsheet lama.
+                if ($table === 'registrations' && $col === 'closing') {
+                    $upd = $pdo->prepare('UPDATE registrations SET temperature = COALESCE(temperature, ?), closing = COALESCE(closing, ?) WHERE id = ?');
+                    foreach ($pdo->query("SELECT id, notes FROM registrations WHERE notes IS NOT NULL AND notes != ''")->fetchAll() as $row) {
+                        [$temp, $closing] = lead_fields_from_notes($row['notes']);
+                        if ($temp || $closing) $upd->execute([$temp, $closing, $row['id']]);
+                    }
                 }
             }
         }
@@ -125,10 +156,16 @@ function program_name(string $slug): string
 
 /* ---------- Pengaturan (disimpan per program) ---------- */
 
-function get_setting(string $key, string $program): string
+function setting_key(string $key, string $program): string
+{
+    return $program === '' ? $key : $key . ':' . $program;
+}
+
+/** Pengaturan per program; $program = '' untuk pengaturan umum (misal koneksi Meta). */
+function get_setting(string $key, string $program = ''): string
 {
     $stmt = db()->prepare('SELECT value FROM settings WHERE key = ?');
-    $stmt->execute([$key . ':' . $program]);
+    $stmt->execute([setting_key($key, $program)]);
     $v = $stmt->fetchColumn();
     if ($v !== false) return $v;
     if ($key === 'wa_template') return DEFAULT_WA_TEMPLATE;
@@ -138,7 +175,20 @@ function get_setting(string $key, string $program): string
 function set_setting(string $key, string $program, string $value): void
 {
     db()->prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
-        ->execute([$key . ':' . $program, $value]);
+        ->execute([setting_key($key, $program), $value]);
+}
+
+/* ---------- Status lead ---------- */
+
+const LEAD_TEMPERATURES = ['cold' => 'Cold', 'warm' => 'Warm', 'hot' => 'Hot'];
+const LEAD_CLOSING = ['ya' => 'Closing', 'tidak' => 'Tidak closing'];
+
+/** Ambil Cold/Warm/Hot dan Closing dari teks catatan (format spreadsheet lama). */
+function lead_fields_from_notes(string $notes): array
+{
+    $temp = preg_match('/\bstatus\s*:\s*(hot|warm|cold)\b/i', $notes, $m) ? strtolower($m[1]) : null;
+    $closing = preg_match('/\bfinal\s*:\s*closing\b/i', $notes) ? 'ya' : null;
+    return [$temp, $closing];
 }
 
 /* ---------- Tanggal batch ---------- */

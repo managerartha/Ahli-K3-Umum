@@ -151,3 +151,98 @@ Supaya sumber pendaftar terlihat di dashboard, tambahkan keterangan di belakang 
 | Gembok/https belum muncul | Tunggu beberapa jam setelah subdomain dibuat, lalu cek lagi Langkah 2 |
 | Lupa password dashboard | Minta bantuan Claude atau developer. Password bisa direset tanpa menghapus data |
 | Mau tambah landing page pelatihan baru | Kirim kode/isi landing page-nya ke Claude untuk disiapkan |
+
+---
+
+# Bagian B: Menghubungkan Meta Ads (CPL, CPA, performa per iklan)
+
+Halaman **Iklan & Closing** di dashboard butuh dua hal:
+
+1. **Access token Meta**, supaya dashboard bisa membaca biaya iklan. Dikerjakan sekali saja.
+2. **Parameter URL di setiap iklan**, supaya dashboard tahu setiap lead datang dari iklan mana.
+
+Tanpa keduanya, tombol Cold/Warm/Hot, Closing, dan closing rate tetap bisa dipakai. Hanya CPL, CPA, dan tabel per iklan yang kosong.
+
+> Tampilan Meta sering berubah. Kalau nama menu berbeda, cari menu dengan nama yang mirip, atau kirim screenshot ke Claude.
+
+## B1. Buat aplikasi Meta (sekali saja)
+
+Token Meta harus "menempel" ke sebuah aplikasi. Aplikasi ini tidak dipublikasikan ke mana pun.
+
+1. Buka **developers.facebook.com**, login dengan akun Facebook yang menjadi admin di Business **PT. Artha Safety Indonesia**.
+2. Klik **My Apps / Aplikasi Saya** → **Create App / Buat Aplikasi**.
+3. Isi nama aplikasi, misalnya `Dashboard Pelatihan`, lalu isi email.
+4. Saat ditanya kegunaan (*use case*), pilih **Other / Lainnya**, lalu tipe **Business**.
+5. Di pilihan **Business portfolio**, pilih **PT. Artha Safety Indonesia**, lalu klik **Create app**.
+
+## B2. Buat System User dan token
+
+1. Buka **business.facebook.com/settings** (Pengaturan Bisnis), lalu pastikan yang terpilih adalah **PT. Artha Safety Indonesia**.
+2. Menu kiri: **Users → System users / Pengguna sistem** → **Add / Tambah**.
+   Nama: `Dashboard Pelatihan`, peran: **Employee / Karyawan**, lalu klik **Create**.
+3. Klik system user tersebut → **Assign assets / Tetapkan aset** → **Ad accounts / Akun iklan** → centang **Artha Meta** →
+   izin **View performance / Lihat performa** sudah cukup → **Save / Simpan**.
+4. Masih di system user yang sama, klik **Generate new token / Buat token baru**:
+   - App: pilih **Dashboard Pelatihan** (dari langkah B1)
+   - Token expiration: **Never / Tidak pernah**
+   - Permission: centang **ads_read**
+   - Klik **Generate token**.
+5. **Salin token** yang muncul. Token ini hanya ditampilkan sekali.
+
+⚠️ **Token ini rahasia, seperti password.** Jangan kirim ke chat, email, atau siapa pun. Tempel hanya di dashboard (langkah B3).
+
+## B3. Tempel di dashboard
+
+1. Dashboard → **Pengaturan** → bagian **Koneksi Meta Ads**.
+2. **ID Akun Iklan:** `1070855277281289` (akun **Artha Meta**).
+3. **Access Token:** tempel token dari B2.
+4. Klik **Simpan & Tes Koneksi**. Jika berhasil, muncul tulisan hijau: *"Koneksi Meta Ads berhasil. … baris data biaya iklan diambil."*
+
+Setelah ini, biaya iklan diperbarui otomatis setiap 3 jam saat halaman Iklan & Closing dibuka. Bisa juga diperbarui manual dengan tombol **Perbarui sekarang**.
+
+## B4. Atur kata kunci kampanye per program
+
+Supaya biaya iklan pelatihan lain (BNSP, alat berat, dan lain-lain) tidak ikut terhitung di Ahli K3 Umum Kemnaker:
+
+1. Dashboard → **Pengaturan** → kartu **Ahli K3 Umum Kemnaker RI** → kolom **Kata kunci nama kampanye Meta**.
+2. Isi bagian nama kampanye yang khusus untuk landing page ini, pisahkan dengan koma. Contoh dari nama kampanye kamu saat ini:
+   ```
+   Web Ads - K3UKYK, Web - K3UYK
+   ```
+   Kampanye **CTWA** (klik ke WhatsApp) sebaiknya **tidak** dimasukkan, karena lead-nya tidak lewat landing page.
+3. Klik **Simpan**.
+
+## B5. Pasang parameter URL di iklan
+
+Ini supaya setiap lead tercatat berasal dari iklan (konten) yang mana.
+
+1. Dashboard → **Pengaturan** → **Koneksi Meta Ads** → klik **Salin** di kotak *Parameter URL*.
+   Isinya:
+   ```
+   utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}&ad_id={{ad.id}}
+   ```
+2. Buka **Ads Manager** → tab **Ads / Iklan**.
+3. Centang semua iklan web yang mengarah ke landing page ini → klik **Edit**.
+4. Di bagian **Destination / Tujuan**:
+   - Pastikan **Website URL** adalah `https://pelatihan.arthasafetyindonesia.com/ahli-k3-umum/`
+   - Cari kolom **URL parameters / Parameter URL** (kadang di bawah tombol *Build a URL parameter*), lalu tempel teks dari langkah 1.
+5. Klik **Publish / Terbitkan**.
+
+Catatan:
+- Mengubah iklan bisa membuat iklan masuk peninjauan ulang sebentar, dan kadang fase pembelajaran (*learning*) Meta dimulai ulang. Sebaiknya lakukan sekali untuk semua iklan sekaligus.
+- Iklan baru: tempel parameter yang sama setiap kali membuat iklan.
+- Lead sebelum parameter dipasang akan tampil di baris **"Tanpa data iklan"**.
+
+## Cara membaca halaman Iklan & Closing
+
+| Angka | Artinya |
+|---|---|
+| **Biaya iklan** | Total belanja iklan Meta pada periode itu (sesuai kata kunci kampanye program) |
+| **Lead** | Jumlah pendaftar pada periode itu (termasuk data impor) |
+| **CPL** | Biaya iklan ÷ lead |
+| **Closing** | Jumlah pendaftar yang kamu tandai **Closing** |
+| **CPA** | Biaya iklan ÷ closing |
+| **Closing rate** | Closing ÷ lead |
+| **Tabel per iklan** | Biaya, klik, pengunjung landing page, lead, kualitas lead, closing, CPL, dan CPA untuk setiap iklan |
+
+Angka CPA dan closing rate hanya akurat jika setiap pendaftar ditandai **Closing / Tidak** dan **Cold / Warm / Hot** di menu **Pendaftar**.

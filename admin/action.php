@@ -3,6 +3,7 @@
  * Semua aksi yang mengubah data di dashboard (wajib login + token CSRF).
  */
 require_once dirname(__DIR__) . '/includes/auth.php';
+require_once dirname(__DIR__) . '/includes/meta.php';
 
 $user = require_login();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -36,6 +37,65 @@ switch ($action) {
                        contacted_at = CASE status WHEN 'baru' THEN ? ELSE NULL END WHERE id = ?")
             ->execute([now(), $id]);
         go($back ?: 'pendaftar.php');
+
+    case 'set_lead':
+        $field = (string) ($_POST['field'] ?? '');
+        $value = (string) ($_POST['value'] ?? '');
+        $allowed = ['temperature' => LEAD_TEMPERATURES, 'closing' => LEAD_CLOSING];
+        if (!isset($allowed[$field]) || !isset($allowed[$field][$value])) {
+            if (!empty($_POST['ajax'])) json_response(['ok' => false], 400);
+            go($back ?: 'pendaftar.php');
+        }
+        $stmt = db()->prepare("SELECT $field FROM registrations WHERE id = ?");
+        $stmt->execute([$id]);
+        $current = $stmt->fetchColumn();
+        // Klik tombol yang sudah aktif = batalkan pilihan.
+        $new = $current === $value ? null : $value;
+        db()->prepare("UPDATE registrations SET $field = ?,
+                       status = CASE WHEN ? IS NOT NULL THEN 'dihubungi' ELSE status END,
+                       contacted_at = CASE WHEN ? IS NOT NULL THEN COALESCE(contacted_at, ?) ELSE contacted_at END
+                       WHERE id = ?")
+            ->execute([$new, $new, $new, now(), $id]);
+        if (!empty($_POST['ajax'])) json_response(['ok' => true, 'field' => $field, 'value' => $new]);
+        go($back ?: 'pendaftar.php');
+
+    case 'save_campaign_keywords':
+        if (!is_program($program)) go('pengaturan.php');
+        $kw = implode(', ', array_filter(array_map('trim', explode(',', mb_substr((string) ($_POST['campaign_keywords'] ?? ''), 0, 300))), 'strlen'));
+        set_setting('campaign_keywords', $program, $kw);
+        flash(program_name($program) . ': kata kunci kampanye disimpan.');
+        go('pengaturan.php#' . $program);
+
+    case 'save_meta':
+        if (!empty($_POST['disconnect'])) {
+            set_setting('meta_token', '', '');
+            set_setting('meta_last_error', '', '');
+            flash('Koneksi Meta Ads diputus.');
+            go('pengaturan.php#meta');
+        }
+        set_setting('meta_account_id', '', preg_replace('/\D+/', '', (string) ($_POST['meta_account_id'] ?? '')));
+        $token = trim((string) ($_POST['meta_token'] ?? ''));
+        if ($token !== '') set_setting('meta_token', '', $token);
+        if (!meta_configured()) {
+            flash('Isi ID akun iklan dan access token.', 'error');
+            go('pengaturan.php#meta');
+        }
+        try {
+            $n = meta_sync();
+            flash("Koneksi Meta Ads berhasil. $n baris data biaya iklan diambil.");
+        } catch (Throwable $e) {
+            flash('Koneksi Meta Ads gagal: ' . $e->getMessage(), 'error');
+        }
+        go('pengaturan.php#meta');
+
+    case 'meta_sync':
+        try {
+            $n = meta_sync();
+            flash("Biaya iklan diperbarui ($n baris data).");
+        } catch (Throwable $e) {
+            flash('Gagal memperbarui biaya iklan: ' . $e->getMessage(), 'error');
+        }
+        go($back ?: 'iklan.php');
 
     case 'save_notes':
         $notes = trim(mb_substr(str_replace("\r\n", "\n", (string) ($_POST['notes'] ?? '')), 0, 2000));

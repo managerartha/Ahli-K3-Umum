@@ -5,6 +5,7 @@
  */
 require_once dirname(__DIR__) . '/includes/auth.php';
 require_once dirname(__DIR__) . '/includes/admin_layout.php';
+require_once dirname(__DIR__) . '/includes/meta.php';
 
 $user = require_login();
 $selected = admin_program();
@@ -67,8 +68,65 @@ admin_nav('pengaturan.php', $user);
             </form>
           </div>
         </div>
+
+        <!-- Kata kunci kampanye -->
+        <div class="px-5 sm:px-6 py-4 border-t border-slate-100 bg-slate-50/60 rounded-b-2xl">
+          <form method="post" action="action.php" class="flex flex-col md:flex-row md:items-end gap-3">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="save_campaign_keywords">
+            <input type="hidden" name="program" value="<?= e($slug) ?>">
+            <div class="flex-1">
+              <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-brands fa-meta mr-1 text-brand-blue"></i>Kata kunci nama kampanye Meta untuk program ini</label>
+              <input name="campaign_keywords" value="<?= e(get_setting('campaign_keywords', $slug)) ?>" placeholder="Contoh: K3UKYK, K3UYK" class="<?= input_class() ?>">
+              <p class="text-[11px] text-slate-500 mt-1">Biaya iklan dihitung dari kampanye yang namanya mengandung salah satu kata ini (pisahkan dengan koma). Kosongkan untuk menghitung semua kampanye.</p>
+            </div>
+            <button class="bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-sm px-5 py-2.5 rounded-xl">Simpan</button>
+          </form>
+        </div>
       </section>
     <?php endforeach; ?>
+
+    <!-- Koneksi Meta Ads -->
+    <?php $metaToken = get_setting('meta_token'); ?>
+    <section id="meta" class="bg-white rounded-2xl border border-slate-200 shadow-sm mb-5 scroll-mt-28">
+      <div class="px-5 sm:px-6 py-4 border-b border-slate-100">
+        <h2 class="text-base font-extrabold text-brand-navy"><i class="fa-brands fa-meta mr-1.5 text-brand-blue"></i>Koneksi Meta Ads</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Untuk mengambil biaya iklan otomatis (CPL & CPA) di halaman <a href="iklan.php" class="font-bold text-brand-blue">Iklan &amp; Closing</a>. Hanya membaca data, tidak bisa mengubah iklan.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+        <form method="post" action="action.php" class="p-5 sm:p-6 space-y-3">
+          <?= csrf_field() ?>
+          <input type="hidden" name="action" value="save_meta">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ID Akun Iklan</label>
+            <input name="meta_account_id" value="<?= e(get_setting('meta_account_id')) ?>" placeholder="Contoh: 1070855277281289" inputmode="numeric" class="<?= input_class() ?>">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Access Token</label>
+            <input type="password" name="meta_token" autocomplete="off" placeholder="<?= $metaToken ? 'Tersimpan (kosongkan jika tidak diganti)' : 'Tempel access token di sini' ?>" class="<?= input_class() ?>">
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button class="bg-brand-navy hover:bg-brand-blue text-white font-bold text-sm px-5 py-2.5 rounded-xl">Simpan &amp; Tes Koneksi</button>
+            <?php if ($metaToken): ?>
+              <button name="disconnect" value="1" onclick="return confirm('Putuskan koneksi Meta Ads? Data biaya yang sudah tersimpan tetap ada.');" class="text-xs font-bold text-red-600 hover:text-red-700 px-2">Putuskan</button>
+            <?php endif; ?>
+          </div>
+          <?php if (meta_configured()): ?>
+            <p class="text-xs <?= get_setting('meta_last_error') ? 'text-red-600' : 'text-emerald-700' ?> font-semibold">
+              <?= get_setting('meta_last_error') ? '<i class="fa-solid fa-triangle-exclamation mr-1"></i>' . e(get_setting('meta_last_error')) : '<i class="fa-solid fa-circle-check mr-1"></i>Terhubung. Terakhir diperbarui ' . e(get_setting('meta_last_sync') ? date('d/m/Y H:i', strtotime(get_setting('meta_last_sync'))) : '-') ?>
+            </p>
+          <?php endif; ?>
+        </form>
+        <div class="p-5 sm:p-6">
+          <h3 class="text-sm font-extrabold text-brand-navy mb-1">Parameter URL untuk setiap iklan</h3>
+          <p class="text-xs text-slate-500 mb-3">Tempel teks ini di Ads Manager → edit iklan → bagian <em>Tujuan / Destination</em> → <strong>URL parameters</strong>. Dengan ini dashboard tahu setiap lead datang dari iklan mana.</p>
+          <div class="flex gap-2">
+            <input id="urlParams" readonly value="<?= e(recommended_url_params()) ?>" class="flex-1 min-w-0 px-3 py-2 rounded-xl border border-slate-300 text-[11px] font-mono bg-slate-50">
+            <button type="button" onclick="var i=document.getElementById('urlParams'); i.select(); navigator.clipboard && navigator.clipboard.writeText(i.value); this.textContent='Tersalin ✓';" class="shrink-0 bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-extrabold text-xs px-3 rounded-xl">Salin</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Ganti password -->
     <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm max-w-xl">

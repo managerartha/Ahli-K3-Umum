@@ -31,11 +31,14 @@ if (!$stmt->fetchColumn()) {
     $host = parse_url($ref, PHP_URL_HOST);
     if ($host && $host === ($_SERVER['HTTP_HOST'] ?? '')) $ref = '';
 
-    db()->prepare('INSERT INTO visits (program, created_at, day, visitor_id, referrer, utm_source, utm_campaign) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    $adId = preg_replace('/\D+/', '', (string) ($data['ad_id'] ?? ''));
+    db()->prepare('INSERT INTO visits (program, created_at, day, visitor_id, referrer, utm_source, utm_campaign, utm_content, ad_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
         ->execute([
             $program, now(), date('Y-m-d'), $visitor, $ref ?: null,
             clean_text($data['utm_source'] ?? '', 100) ?: null,
-            clean_text($data['utm_campaign'] ?? '', 150) ?: null,
+            clean_text($data['utm_campaign'] ?? '', 200) ?: null,
+            clean_text($data['utm_content'] ?? '', 200) ?: null,
+            $adId !== '' ? substr($adId, 0, 30) : null,
         ]);
 }
 

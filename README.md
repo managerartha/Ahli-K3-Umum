@@ -21,7 +21,7 @@ tanpa Google Apps Script atau Spreadsheet.
 | Halaman | Isi |
 |---|---|
 | **Ringkasan** | Pengunjung, pendaftar, konversi (hari ini / 7 / 30 hari), perbandingan per program, grafik 14 hari, sumber kunjungan, pendaftar terbaru |
-| **Pendaftar** | Semua data form, cari & filter, tombol WhatsApp langsung, status "Baru / Sudah dihubungi", hapus, unduh CSV (Excel) |
+| **Pendaftar** | Semua data form, cari & filter, tombol WhatsApp langsung, tombol Cold/Warm/Hot & Closing, catatan, impor & unduh CSV |
 | **Pengaturan** | Tanggal batch & template pesan WhatsApp per program, ganti password |
 
 Pilihan program di kanan atas dashboard: **Semua program** atau satu program tertentu.

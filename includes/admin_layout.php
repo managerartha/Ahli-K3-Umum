@@ -53,6 +53,7 @@ function admin_nav(string $active, array $user, bool $programPicker = true): voi
     $items = [
         'index.php'      => ['Ringkasan', 'fa-chart-simple'],
         'pendaftar.php'  => ['Pendaftar', 'fa-users'],
+        'iklan.php'      => ['Iklan & Closing', 'fa-bullseye'],
         'pengaturan.php' => ['Pengaturan', 'fa-gear'],
     ];
     ?>

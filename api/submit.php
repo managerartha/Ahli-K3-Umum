@@ -36,12 +36,19 @@ if ((int) $stmt->fetchColumn() >= 10) {
     json_response(['result' => 'error', 'message' => 'Terlalu banyak pendaftaran, coba lagi nanti'], 429);
 }
 
-db()->prepare('INSERT INTO registrations (program, created_at, name, phone, email, goal, scheme, utm_source, utm_campaign, ip_hash)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+$adId = preg_replace('/\D+/', '', (string) ($data['ad_id'] ?? ''));
+
+db()->prepare('INSERT INTO registrations (program, created_at, name, phone, email, goal, scheme,
+                   utm_source, utm_medium, utm_campaign, utm_term, utm_content, ad_id, ip_hash)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
     ->execute([
         $program, now(), $name, $phone, $email, $goal, $scheme,
         clean_text($data['utm_source'] ?? '', 100) ?: null,
-        clean_text($data['utm_campaign'] ?? '', 150) ?: null,
+        clean_text($data['utm_medium'] ?? '', 100) ?: null,
+        clean_text($data['utm_campaign'] ?? '', 200) ?: null,
+        clean_text($data['utm_term'] ?? '', 200) ?: null,
+        clean_text($data['utm_content'] ?? '', 200) ?: null,
+        $adId !== '' ? substr($adId, 0, 30) : null,
         ip_hash(),
     ]);
 

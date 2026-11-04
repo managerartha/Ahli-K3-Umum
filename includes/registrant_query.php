@@ -13,6 +13,8 @@ function registrant_filters(array $in, string $program = ''): array
         'status' => in_array($status, ['baru', 'dihubungi'], true) ? $status : '',
         'from'   => $date($in['from'] ?? ''),
         'to'     => $date($in['to'] ?? ''),
+        'lead'   => in_array($in['lead'] ?? '', ['cold', 'warm', 'hot', 'belum'], true) ? $in['lead'] : '',
+        'hasil'  => in_array($in['hasil'] ?? '', ['ya', 'tidak', 'belum'], true) ? $in['hasil'] : '',
     ];
 }
 
@@ -32,6 +34,22 @@ function registrant_where(array $f): array
     if ($f['status'] !== '') {
         $cond[] = 'status = ?';
         $params[] = $f['status'];
+    }
+    if ($f['lead'] !== '') {
+        if ($f['lead'] === 'belum') {
+            $cond[] = 'temperature IS NULL';
+        } else {
+            $cond[] = 'temperature = ?';
+            $params[] = $f['lead'];
+        }
+    }
+    if ($f['hasil'] !== '') {
+        if ($f['hasil'] === 'belum') {
+            $cond[] = 'closing IS NULL';
+        } else {
+            $cond[] = 'closing = ?';
+            $params[] = $f['hasil'];
+        }
     }
     if ($f['from'] !== '') {
         $cond[] = 'created_at >= ?';
