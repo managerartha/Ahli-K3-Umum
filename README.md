@@ -1,69 +1,67 @@
-# Ahli K3 Umum: Landing Page + Dashboard
+# Landing Page Pelatihan + Dashboard: PT Artha Safety Indonesia
 
-Target hosting: **https://ak3u.arthasafetyindonesia.com**
+Hosting: **https://pelatihan.arthasafetyindonesia.co.id**
 
-Landing page pendaftaran Pelatihan Ahli K3 Umum dengan dashboard admin sendiri.
+Beberapa landing page pelatihan dalam satu subdomain, dengan satu dashboard admin.
 Semua data (pendaftar, kunjungan, tanggal batch) disimpan di hosting sendiri,
 tanpa Google Apps Script atau Spreadsheet.
 
-## Fitur dashboard (`/admin`)
+👉 **Cara pasang ke hosting: lihat [PANDUAN-PASANG.md](PANDUAN-PASANG.md)**
+
+## Alamat
+
+| Alamat | Isi |
+|---|---|
+| `/ahli-k3-umum/` | Landing page Ahli K3 Umum Kemnaker RI |
+| `/admin/` | Dashboard (login) |
+| `/` | Otomatis diarahkan ke program pertama |
+
+## Fitur dashboard
 
 | Halaman | Isi |
 |---|---|
-| **Ringkasan** | Jumlah pengunjung, pendaftar, dan konversi (hari ini / 7 hari / 30 hari), grafik 14 hari, sumber kunjungan, pendaftar terbaru |
-| **Pendaftar** | Semua data form, cari & filter, tombol WhatsApp langsung ke nomor pendaftar, status "Baru / Sudah dihubungi", hapus, unduh CSV (Excel) |
-| **Pengaturan** | Ubah tanggal batch di landing page, template pesan WhatsApp, ganti password |
+| **Ringkasan** | Pengunjung, pendaftar, konversi (hari ini / 7 / 30 hari), perbandingan per program, grafik 14 hari, sumber kunjungan, pendaftar terbaru |
+| **Pendaftar** | Semua data form, cari & filter, tombol WhatsApp langsung, status "Baru / Sudah dihubungi", hapus, unduh CSV (Excel) |
+| **Pengaturan** | Tanggal batch & template pesan WhatsApp per program, ganti password |
 
-Klik tombol WhatsApp pendaftar otomatis menandainya **Sudah dihubungi**.
+Pilihan program di kanan atas dashboard: **Semua program** atau satu program tertentu.
+
+## Menambah landing page pelatihan baru
+
+1. Buat folder baru, misalnya `ak3-kebakaran/`, berisi `index.php` landing page.
+   Salin pola dari `ahli-k3-umum/index.php`:
+   - baris `$PROGRAM = 'ak3-kebakaran';` (harus sama dengan nama folder)
+   - tanggal ditampilkan dengan `<?= htmlspecialchars($batchLong) ?>` / `$batchShort`
+   - form mengirim ke `../api/submit.php` dengan `program: LANDING_PROGRAM`
+   - pencatat kunjungan ke `../api/track.php`
+2. Tambahkan satu baris di `includes/programs.php`:
+
+   ```php
+   'ak3-kebakaran' => ['name' => 'AK3 Kebakaran', 'batch_start' => '2026-12-07', 'batch_end' => '2026-12-11'],
+   ```
+3. Upload folder baru dan `includes/programs.php` ke hosting. Program langsung muncul di dashboard.
 
 ## Kebutuhan hosting
 
-- PHP **7.4 atau lebih baru** dengan ekstensi `pdo_sqlite` (aktif secara bawaan di hampir semua hosting cPanel)
-- Server Apache / LiteSpeed (bawaan cPanel). Folder `data/` dan `includes/` dikunci lewat `.htaccess`.
-  Jika hosting memakai Nginx, minta admin hosting memblokir akses ke folder `data/` dan `includes/`.
-
-Tidak perlu membuat database MySQL. Database SQLite dibuat otomatis di `data/` saat pertama dipakai.
-
-## Cara pasang (cPanel)
-
-1. Buat subdomain `ak3u` di cPanel → **Domains / Subdomains**. Catat folder dokumennya (misal `public_html/ak3u`).
-2. Upload **semua isi repo** ke folder tersebut (`index.php`, `admin/`, `api/`, `includes/`, `data/`, beserta file `.htaccess` di dalamnya).
-   - Di File Manager, aktifkan **Settings → Show Hidden Files** agar file `.htaccess` ikut terlihat.
-   - Jika masih ada `index.html` lama di folder itu, **hapus**. Kalau tidak, server bisa menampilkan versi lama.
-3. Pastikan folder `data/` bisa ditulisi oleh PHP (permission `755`; jika gagal coba `775`).
-4. **Segera** buka `https://ak3u.arthasafetyindonesia.com/admin/` lalu buat akun admin.
-   Halaman pembuatan akun hanya muncul sekali, yaitu sampai akun pertama dibuat.
-5. Buka **Pengaturan**, cek tanggal batch, lalu isi form di landing page sekali untuk tes.
-6. Aktifkan SSL (cPanel → **SSL/TLS Status → Run AutoSSL**) agar login dashboard aman.
-
-## Cek keamanan setelah upload
-
-Buka alamat berikut di browser. Keduanya **harus** menampilkan "403 Forbidden":
-
-- `https://ak3u.arthasafetyindonesia.com/data/.ht-artha.sqlite`
-- `https://ak3u.arthasafetyindonesia.com/includes/bootstrap.php`
-
-## Backup data
-
-Seluruh data ada di satu file: `data/.ht-artha.sqlite`. Unduh file ini lewat File Manager untuk backup,
-atau gunakan tombol **Unduh CSV** di halaman Pendaftar.
-
-## Lacak sumber iklan
-
-Tambahkan parameter UTM di link iklan agar sumbernya tercatat di dashboard, contoh:
-
-```
-https://ak3u.arthasafetyindonesia.com/?utm_source=facebook&utm_campaign=batch-desember
-```
+- PHP **7.4+** dengan ekstensi `pdo_sqlite`
+- Apache / LiteSpeed (cPanel). Folder `data/` dan `includes/` dikunci lewat `.htaccess`.
+  Jika hosting memakai Nginx, folder `data/` dan `includes/` harus diblokir manual di konfigurasi server.
 
 ## Struktur
 
 ```
-index.php              Landing page (tanggal batch diambil dari dashboard)
+index.php              Mengarahkan ke landing page program pertama
+ahli-k3-umum/          Landing page Ahli K3 Umum
 api/submit.php         Menyimpan data form pendaftaran
 api/track.php          Mencatat kunjungan landing page
 admin/                 Dashboard (login, ringkasan, pendaftar, pengaturan, ekspor CSV)
-includes/              Kode bersama (database, login, tampilan) — tidak bisa diakses publik
-data/                  Database SQLite — tidak bisa diakses publik
-apps-script/Code.gs    Webhook Google Apps Script lama (tidak dipakai lagi, disimpan sebagai arsip)
+includes/programs.php  Daftar program pelatihan
+includes/              Kode bersama (database, login, tampilan); tidak bisa diakses publik
+data/                  Database SQLite; tidak bisa diakses publik
+apps-script/Code.gs    Webhook Google Apps Script lama (tidak dipakai, arsip)
 ```
+
+## Backup
+
+Seluruh data ada di satu file: `data/.ht-artha.sqlite`. Unduh lewat File Manager,
+atau pakai tombol **Unduh CSV** di halaman Pendaftar.

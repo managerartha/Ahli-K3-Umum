@@ -9,7 +9,8 @@ require_once dirname(__DIR__) . '/includes/registrant_query.php';
 require_once dirname(__DIR__) . '/includes/registrant_card.php';
 
 $user = require_login();
-$f = registrant_filters($_GET);
+$program = admin_program();
+$f = registrant_filters($_GET, $program);
 [$where, $params] = registrant_where($f);
 
 $perPage = 25;
@@ -23,15 +24,16 @@ $stmt = db()->prepare("SELECT * FROM registrations $where ORDER BY id DESC LIMIT
 $stmt->execute($params);
 $rows = $stmt->fetchAll();
 
-$qs = fn(array $extra) => http_build_query(array_filter(array_merge($f, $extra), fn($v) => $v !== '' && $v !== null));
+$qs = fn(array $extra) => http_build_query(array_filter(array_merge(array_diff_key($f, ['program' => 1]), $extra), fn($v) => $v !== '' && $v !== null));
+$hasFilter = $f['q'] !== '' || $f['status'] !== '' || $f['from'] !== '' || $f['to'] !== '';
 
 admin_head('Pendaftar');
 admin_nav('pendaftar.php', $user);
 ?>
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
       <div>
-        <h1 class="text-2xl font-extrabold text-brand-navy">Pendaftar</h1>
-        <p class="text-sm text-slate-500"><?= $total ?> data<?= $where ? ' sesuai filter' : '' ?>. Klik tombol hijau untuk chat WhatsApp langsung.</p>
+        <h1 class="text-2xl font-extrabold text-brand-navy">Pendaftar<?= $program ? ': ' . e(program_name($program)) : '' ?></h1>
+        <p class="text-sm text-slate-500"><?= $total ?> data<?= $hasFilter ? ' sesuai filter' : '' ?><?= $program ? '' : ' dari semua program' ?>. Klik tombol hijau untuk chat WhatsApp langsung.</p>
       </div>
       <a href="export.php?<?= e($qs([])) ?>" class="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-xs px-3.5 py-2 rounded-xl self-start sm:self-auto">
         <i class="fa-solid fa-file-csv"></i> Unduh CSV / Excel
@@ -61,16 +63,16 @@ admin_nav('pendaftar.php', $user);
       </div>
       <div class="col-span-2 md:col-span-2 flex gap-2">
         <button class="flex-1 bg-brand-navy hover:bg-brand-blue text-white font-bold text-sm py-2.5 rounded-xl">Filter</button>
-        <?php if ($where): ?><a href="pendaftar.php" class="px-3 py-2.5 rounded-xl border border-slate-300 text-slate-500 text-sm" title="Reset filter"><i class="fa-solid fa-xmark"></i></a><?php endif; ?>
+        <?php if ($hasFilter): ?><a href="pendaftar.php" class="px-3 py-2.5 rounded-xl border border-slate-300 text-slate-500 text-sm" title="Reset filter"><i class="fa-solid fa-xmark"></i></a><?php endif; ?>
       </div>
     </form>
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
       <?php if (!$rows): ?>
-        <p class="px-5 py-10 text-center text-sm text-slate-400">Tidak ada pendaftar<?= $where ? ' yang sesuai filter' : '' ?>.</p>
+        <p class="px-5 py-10 text-center text-sm text-slate-400">Tidak ada pendaftar<?= $hasFilter ? ' yang sesuai filter' : '' ?>.</p>
       <?php endif; ?>
       <div class="divide-y divide-slate-100">
-        <?php foreach ($rows as $r) registrant_row($r); ?>
+        <?php foreach ($rows as $r) registrant_row($r, true, !$program); ?>
       </div>
     </div>
 

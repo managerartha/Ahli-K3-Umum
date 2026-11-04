@@ -4,7 +4,7 @@
  * Klik tombol WhatsApp otomatis menandai pendaftar sebagai "Sudah dihubungi".
  */
 
-function registrant_row(array $r, bool $withActions = true): void
+function registrant_row(array $r, bool $withActions = true, bool $showProgram = false): void
 {
     $contacted = $r['status'] === 'dihubungi';
     $when = date('d/m/Y H:i', strtotime($r['created_at']));
@@ -16,6 +16,9 @@ function registrant_row(array $r, bool $withActions = true): void
           <span data-status-badge class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full <?= $contacted ? 'bg-slate-100 text-slate-500' : 'bg-brand-accent text-brand-dark' ?>">
             <?= $contacted ? 'Sudah dihubungi' : 'Baru' ?>
           </span>
+          <?php if ($showProgram): ?>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-subtle text-brand-blue"><?= e(program_name($r['program'])) ?></span>
+          <?php endif; ?>
         </div>
         <p class="text-xs text-slate-500 mt-1 leading-relaxed">
           <i class="fa-regular fa-clock mr-0.5"></i> <?= e($when) ?>

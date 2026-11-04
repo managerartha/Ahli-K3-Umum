@@ -14,6 +14,7 @@ check_csrf();
 $action = $_POST['action'] ?? '';
 $id = (int) ($_POST['id'] ?? 0);
 $back = (string) ($_POST['back'] ?? '');
+$program = (string) ($_POST['program'] ?? '');
 // Hanya izinkan kembali ke halaman di dalam folder admin.
 if (!preg_match('#^[^:]*/admin/[a-z]+\.php(\?[^\s]*)?$#', $back)) $back = '';
 
@@ -43,6 +44,7 @@ switch ($action) {
         go($back ?: 'pendaftar.php');
 
     case 'save_batch':
+        if (!is_program($program)) go('pengaturan.php');
         $start = (string) ($_POST['batch_start'] ?? '');
         $end = (string) ($_POST['batch_end'] ?? '');
         $valid = fn($d) => ($dt = DateTime::createFromFormat('Y-m-d', $d)) && $dt->format('Y-m-d') === $d;
@@ -51,17 +53,18 @@ switch ($action) {
         } elseif ($end < $start) {
             flash('Tanggal selesai tidak boleh sebelum tanggal mulai.', 'error');
         } else {
-            set_setting('batch_start', $start);
-            set_setting('batch_end', $end);
-            flash('Tanggal batch disimpan: ' . batch_long() . '. Landing page sudah otomatis berubah.');
+            set_setting('batch_start', $program, $start);
+            set_setting('batch_end', $program, $end);
+            flash(program_name($program) . ': tanggal batch disimpan (' . batch_long($program) . '). Landing page sudah otomatis berubah.');
         }
-        go('pengaturan.php');
+        go('pengaturan.php#' . $program);
 
     case 'save_wa_template':
+        if (!is_program($program)) go('pengaturan.php');
         $tpl = trim(mb_substr((string) ($_POST['wa_template'] ?? ''), 0, 1000));
-        set_setting('wa_template', $tpl !== '' ? $tpl : DEFAULT_SETTINGS['wa_template']);
-        flash('Template pesan WhatsApp disimpan.');
-        go('pengaturan.php');
+        set_setting('wa_template', $program, $tpl !== '' ? $tpl : DEFAULT_WA_TEMPLATE);
+        flash(program_name($program) . ': template pesan WhatsApp disimpan.');
+        go('pengaturan.php#' . $program);
 
     case 'change_password':
         $stmt = db()->prepare('SELECT password_hash FROM users WHERE id = ?');

@@ -14,6 +14,11 @@ if (!is_array($data)) {
     json_response(['result' => 'error', 'message' => 'Data tidak valid'], 400);
 }
 
+$program = (string) ($data['program'] ?? '');
+if (!is_program($program)) {
+    json_response(['result' => 'error', 'message' => 'Program tidak dikenal'], 422);
+}
+
 $name   = clean_text($data['name'] ?? '', 150);
 $phone  = clean_text($data['phone'] ?? '', 30);
 $email  = clean_text($data['email'] ?? '', 150);
@@ -31,10 +36,10 @@ if ((int) $stmt->fetchColumn() >= 10) {
     json_response(['result' => 'error', 'message' => 'Terlalu banyak pendaftaran, coba lagi nanti'], 429);
 }
 
-db()->prepare('INSERT INTO registrations (created_at, name, phone, email, goal, scheme, utm_source, utm_campaign, ip_hash)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+db()->prepare('INSERT INTO registrations (program, created_at, name, phone, email, goal, scheme, utm_source, utm_campaign, ip_hash)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
     ->execute([
-        now(), $name, $phone, $email, $goal, $scheme,
+        $program, now(), $name, $phone, $email, $goal, $scheme,
         clean_text($data['utm_source'] ?? '', 100) ?: null,
         clean_text($data['utm_campaign'] ?? '', 150) ?: null,
         ip_hash(),

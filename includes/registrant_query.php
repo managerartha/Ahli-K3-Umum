@@ -3,11 +3,12 @@
  * Filter pendaftar yang dipakai bersama oleh halaman daftar dan ekspor CSV.
  */
 
-function registrant_filters(array $in): array
+function registrant_filters(array $in, string $program = ''): array
 {
     $date = fn($v) => is_string($v) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $v) ? $v : '';
     $status = $in['status'] ?? '';
     return [
+        'program' => $program,
         'q'      => mb_substr(trim((string) ($in['q'] ?? '')), 0, 100),
         'status' => in_array($status, ['baru', 'dihubungi'], true) ? $status : '',
         'from'   => $date($in['from'] ?? ''),
@@ -19,6 +20,10 @@ function registrant_where(array $f): array
 {
     $cond = [];
     $params = [];
+    if ($f['program'] !== '') {
+        $cond[] = 'program = ?';
+        $params[] = $f['program'];
+    }
     if ($f['q'] !== '') {
         $cond[] = '(name LIKE ? OR phone LIKE ? OR email LIKE ?)';
         $like = '%' . $f['q'] . '%';
