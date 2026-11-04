@@ -1,0 +1,4 @@
+# Database berisi data pendaftar: jangan pernah di-commit
+data/*.sqlite
+data/*.sqlite-*
+data/.ht-*

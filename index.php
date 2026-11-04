@@ -1,3 +1,16 @@
+<?php
+// Tanggal batch diatur dari dashboard admin (admin/pengaturan.php).
+// Jika database belum siap, landing page tetap tampil dengan tanggal bawaan.
+$batchLong = '26 Okt - 6 November 2026';
+$batchShort = '26 Okt-6 Nov 2026';
+try {
+    require_once __DIR__ . '/includes/bootstrap.php';
+    $batchLong = batch_long() ?: $batchLong;
+    $batchShort = batch_short() ?: $batchShort;
+} catch (Throwable $e) {
+    error_log('Landing page settings: ' . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
@@ -463,7 +476,7 @@
                     <i class="fa-solid fa-calendar-check text-xs"></i>
                     <span>BATCH TERDEKAT</span>
                   </div>
-                  <h4 class="font-bold text-brand-navy text-sm leading-snug">26 Okt - 6 November 2026</h4>
+                  <h4 class="font-bold text-brand-navy text-sm leading-snug"><?= htmlspecialchars($batchLong) ?></h4>
                   <p class="text-[11px] text-slate-600 mt-0.5">Kuota Terbatas</p>
                 </div>
 
@@ -1151,7 +1164,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             </div>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
               <span class="text-slate-500 font-medium">Batch Terdekat</span>
-              <span class="font-extrabold text-brand-navy text-right">26 Okt-6 Nov 2026</span>
+              <span class="font-extrabold text-brand-navy text-right"><?= htmlspecialchars($batchShort) ?></span>
             </div>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
               <span class="text-slate-500 font-medium">Biaya mulai</span>
@@ -2683,7 +2696,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
 
   <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(7,28,110,0.12)] px-4 py-3 flex items-center justify-between">
     <div class="flex flex-col">
-      <span class="text-xs sm:text-sm font-black text-brand-navy leading-tight">Batch 26 Okt-6 Nov 2026</span>
+      <span class="text-xs sm:text-sm font-black text-brand-navy leading-tight">Batch <?= htmlspecialchars($batchShort) ?></span>
       <span class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">Mulai 3.850.000</span>
     </div>
 
@@ -2788,8 +2801,34 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
   </div>
 
   <script>
-    // Link Webhook Google Spreadsheet Resmi PT Artha Safety Indonesia
-    var SPREADSHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxmNe6xJHKH3dJBLGWNssWtFaqi1ObfZzRMYd1JMKRE5SC42XoBxIPtRctIymxWsMZc/exec';
+    // Endpoint penyimpanan pendaftaran di hosting sendiri (lihat dashboard di /admin)
+    var SPREADSHEET_WEBHOOK_URL = 'api/submit.php';
+
+    // Sumber kunjungan dari iklan/link (utm_source & utm_campaign), disimpan selama sesi
+    var trafficSource = (function() {
+      var src = { utm_source: '', utm_campaign: '' };
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var saved = JSON.parse(sessionStorage.getItem('artha_utm') || '{}');
+        src.utm_source = params.get('utm_source') || saved.utm_source || '';
+        src.utm_campaign = params.get('utm_campaign') || saved.utm_campaign || '';
+        sessionStorage.setItem('artha_utm', JSON.stringify(src));
+      } catch (err) {}
+      return src;
+    })();
+
+    // Catat kunjungan landing page untuk statistik di dashboard
+    (function() {
+      try {
+        var vid = localStorage.getItem('artha_vid');
+        if (!vid) {
+          vid = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+          localStorage.setItem('artha_vid', vid);
+        }
+        var body = JSON.stringify({ vid: vid, ref: document.referrer, utm_source: trafficSource.utm_source, utm_campaign: trafficSource.utm_campaign });
+        fetch('api/track.php', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body, keepalive: true }).catch(function(){});
+      } catch (err) {}
+    })();
 
     // 10 Foto Dokumentasi Resmi K3 PT Artha Safety Indonesia
     var docPhotosList = [
@@ -2996,7 +3035,9 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         phone: phone,
         email: email,
         goal: goal,
-        scheme: scheme
+        scheme: scheme,
+        utm_source: trafficSource.utm_source,
+        utm_campaign: trafficSource.utm_campaign
       };
 
       // 1. Meta Pixel Event Tracking (Lead)
@@ -3018,7 +3059,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         console.warn('LocalStorage save bypassed:', err);
       }
 
-      // 3. Kirim otomatis ke Google Spreadsheet via Webhook URL
+      // 3. Kirim otomatis ke database dashboard (api/submit.php)
       if (SPREADSHEET_WEBHOOK_URL && SPREADSHEET_WEBHOOK_URL.length > 5) {
         try {
           fetch(SPREADSHEET_WEBHOOK_URL, {
