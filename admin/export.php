@@ -21,14 +21,14 @@ header('Cache-Control: no-store');
 
 $out = fopen('php://output', 'w');
 fwrite($out, "\xEF\xBB\xBF"); // BOM agar Excel membaca UTF-8 dengan benar
-fputcsv($out, ['Program', 'Waktu Submit', 'Nama Lengkap', 'Nomor WhatsApp', 'Email', 'Tujuan Mengikuti', 'Skema Pelatihan', 'Status', 'Sumber (utm_source)', 'Kampanye (utm_campaign)']);
+fputcsv($out, ['Program', 'Waktu Submit', 'Nama Lengkap', 'Nomor WhatsApp', 'Email', 'Tujuan Mengikuti', 'Skema Pelatihan', 'Status', 'Sumber (utm_source)', 'Kampanye (utm_campaign)', 'Catatan']);
 foreach ($stmt as $r) {
     fputcsv($out, array_map($safe, [
         program_name($r['program']),
         date('d/m/Y H:i:s', strtotime($r['created_at'])),
         $r['name'], $r['phone'], $r['email'], $r['goal'], $r['scheme'],
         $r['status'] === 'dihubungi' ? 'Sudah dihubungi' : 'Baru',
-        $r['utm_source'], $r['utm_campaign'],
+        $r['utm_source'], $r['utm_campaign'], $r['notes'],
     ]));
 }
 fclose($out);

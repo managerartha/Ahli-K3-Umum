@@ -25,9 +25,9 @@ function registrant_where(array $f): array
         $params[] = $f['program'];
     }
     if ($f['q'] !== '') {
-        $cond[] = '(name LIKE ? OR phone LIKE ? OR email LIKE ?)';
+        $cond[] = '(name LIKE ? OR phone LIKE ? OR email LIKE ? OR notes LIKE ?)';
         $like = '%' . $f['q'] . '%';
-        array_push($params, $like, $like, $like);
+        array_push($params, $like, $like, $like, $like);
     }
     if ($f['status'] !== '') {
         $cond[] = 'status = ?';

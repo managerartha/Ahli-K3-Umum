@@ -37,6 +37,12 @@ switch ($action) {
             ->execute([now(), $id]);
         go($back ?: 'pendaftar.php');
 
+    case 'save_notes':
+        $notes = trim(mb_substr(str_replace("\r\n", "\n", (string) ($_POST['notes'] ?? '')), 0, 2000));
+        db()->prepare('UPDATE registrations SET notes = ? WHERE id = ?')->execute([$notes !== '' ? $notes : null, $id]);
+        flash('Catatan disimpan.');
+        go($back ?: 'pendaftar.php');
+
     case 'delete':
         $stmt = db()->prepare('DELETE FROM registrations WHERE id = ?');
         $stmt->execute([$id]);

@@ -57,7 +57,8 @@ function migrate(PDO $pdo): void
             contacted_at TEXT,
             utm_source TEXT,
             utm_campaign TEXT,
-            ip_hash TEXT
+            ip_hash TEXT,
+            notes TEXT
         );
         CREATE TABLE IF NOT EXISTS visits (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -79,11 +80,17 @@ function migrate(PDO $pdo): void
         );
     ");
 
-    // Database dari versi sebelumnya (satu program) belum punya kolom "program".
-    foreach (['registrations', 'visits'] as $table) {
-        $cols = array_column($pdo->query("PRAGMA table_info($table)")->fetchAll(), 'name');
-        if (!in_array('program', $cols, true)) {
-            $pdo->exec("ALTER TABLE $table ADD COLUMN program TEXT NOT NULL DEFAULT $default");
+    // Tambahkan kolom baru ke database dari versi sebelumnya.
+    $addColumns = [
+        'registrations' => ['program' => "TEXT NOT NULL DEFAULT $default", 'notes' => 'TEXT'],
+        'visits'        => ['program' => "TEXT NOT NULL DEFAULT $default"],
+    ];
+    foreach ($addColumns as $table => $columns) {
+        $existing = array_column($pdo->query("PRAGMA table_info($table)")->fetchAll(), 'name');
+        foreach ($columns as $col => $def) {
+            if (!in_array($col, $existing, true)) {
+                $pdo->exec("ALTER TABLE $table ADD COLUMN $col $def");
+            }
         }
     }
 

@@ -35,14 +35,19 @@ admin_nav('pendaftar.php', $user);
         <h1 class="text-2xl font-extrabold text-brand-navy">Pendaftar<?= $program ? ': ' . e(program_name($program)) : '' ?></h1>
         <p class="text-sm text-slate-500"><?= $total ?> data<?= $hasFilter ? ' sesuai filter' : '' ?><?= $program ? '' : ' dari semua program' ?>. Klik tombol hijau untuk chat WhatsApp langsung.</p>
       </div>
-      <a href="export.php?<?= e($qs([])) ?>" class="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-xs px-3.5 py-2 rounded-xl self-start sm:self-auto">
-        <i class="fa-solid fa-file-csv"></i> Unduh CSV / Excel
-      </a>
+      <div class="flex gap-2 self-start sm:self-auto">
+        <a href="impor.php" class="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-xs px-3.5 py-2 rounded-xl">
+          <i class="fa-solid fa-file-import"></i> Impor CSV
+        </a>
+        <a href="export.php?<?= e($qs([])) ?>" class="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-brand-navy text-brand-navy font-bold text-xs px-3.5 py-2 rounded-xl">
+          <i class="fa-solid fa-file-csv"></i> Unduh CSV / Excel
+        </a>
+      </div>
     </div>
 
     <form method="get" class="bg-white rounded-2xl border border-slate-200 p-4 mb-4 grid grid-cols-2 md:grid-cols-12 gap-3 items-end shadow-sm">
       <div class="col-span-2 md:col-span-4">
-        <label class="block text-[11px] font-bold text-slate-600 mb-1">Cari nama / WA / email</label>
+        <label class="block text-[11px] font-bold text-slate-600 mb-1">Cari nama / WA / email / catatan</label>
         <input name="q" value="<?= e($f['q']) ?>" placeholder="Ketik untuk mencari..." class="<?= input_class() ?>">
       </div>
       <div class="md:col-span-2">
