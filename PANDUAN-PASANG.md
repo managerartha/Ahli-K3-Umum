@@ -224,7 +224,7 @@ Ini supaya setiap lead tercatat berasal dari iklan (konten) yang mana.
 1. Dashboard → **Pengaturan** → **Koneksi Meta Ads** → klik **Salin** di kotak *Parameter URL*.
    Isinya:
    ```
-   utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}&ad_id={{ad.id}}
+   utm_source=meta&utm_medium=paid_social&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}&ad_id={{ad.id}}
    ```
 2. Buka **Ads Manager** → tab **Ads / Iklan**.
 3. Centang semua iklan web yang mengarah ke landing page ini → klik **Edit**.

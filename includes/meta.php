@@ -183,5 +183,5 @@ function campaign_matches(?string $campaign, array $keywords): bool
 /** Parameter URL yang disarankan untuk dipasang di setiap iklan Meta. */
 function recommended_url_params(): string
 {
-    return 'utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}&ad_id={{ad.id}}';
+    return 'utm_source=meta&utm_medium=paid_social&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}&ad_id={{ad.id}}';
 }
