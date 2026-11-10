@@ -138,6 +138,21 @@ switch ($action) {
         }
         go('pengaturan.php#' . $program);
 
+    case 'save_urgency':
+        if (!is_program($program)) go('pengaturan.php');
+        $promo = (string) ($_POST['promo_end'] ?? '');
+        if ($promo !== '' && !(($dt = DateTime::createFromFormat('Y-m-d', $promo)) && $dt->format('Y-m-d') === $promo)) $promo = '';
+        $total = trim((string) ($_POST['quota_total'] ?? ''));
+        $left = trim((string) ($_POST['quota_left'] ?? ''));
+        $total = ctype_digit($total) ? (string) min(999, (int) $total) : '';
+        $left = ctype_digit($left) ? (string) min(999, (int) $left) : '';
+        if ($total !== '' && $left !== '' && (int) $left > (int) $total) $left = $total;
+        set_setting('promo_end', $program, $promo);
+        set_setting('quota_total', $program, $total);
+        set_setting('quota_left', $program, $left);
+        flash(program_name($program) . ': pengaturan promo & kuota disimpan.');
+        go('pengaturan.php#' . $program);
+
     case 'save_wa_template':
         if (!is_program($program)) go('pengaturan.php');
         $tpl = trim(mb_substr((string) ($_POST['wa_template'] ?? ''), 0, 1000));

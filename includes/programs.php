@@ -11,5 +11,9 @@ const PROGRAMS = [
         'name'        => 'Ahli K3 Umum Kemnaker RI',
         'batch_start' => '2026-10-26',
         'batch_end'   => '2026-11-06',
+        // Urgensi (diatur dari dashboard → Pengaturan). Kosong = tidak ditampilkan.
+        'promo_end'   => '',
+        'quota_total' => '',
+        'quota_left'  => '',
     ],
 ];

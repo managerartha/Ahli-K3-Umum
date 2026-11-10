@@ -152,10 +152,14 @@ admin_nav('pendaftar.php', $user, false);
           <label class="block text-xs font-bold text-slate-700 mb-1">Skema diminati</label>
           <input name="scheme" list="schemeList" value="<?= e($old['scheme'] ?? '') ?>" placeholder="Pilih atau ketik" class="<?= input_class() ?>">
           <datalist id="schemeList">
-            <option value="Peserta Umum - Blended (Rp 3.850.000)">
-            <option value="Peserta Umum - Full Offline (Rp 5.000.000)">
-            <option value="Utusan Perusahaan - Blended (Rp 5.550.000)">
-            <option value="Utusan Perusahaan - Full Offline (Rp 6.500.000)">
+            <option value="Umum · Non penginapan · Basic (Rp 3.850.000)">
+            <option value="Umum · Non penginapan · Full (Rp 4.200.000)">
+            <option value="Umum · Penginapan · Basic (Rp 4.350.000)">
+            <option value="Umum · Penginapan · Full (Rp 4.700.000)">
+            <option value="Perusahaan · Non penginapan · Basic (Rp 5.550.000)">
+            <option value="Perusahaan · Non penginapan · Full (Rp 6.000.000)">
+            <option value="Perusahaan · Penginapan · Basic (Rp 6.000.000)">
+            <option value="Perusahaan · Penginapan · Full (Rp 6.450.000)">
           </datalist>
         </div>
         <div>

@@ -25,9 +25,10 @@ $email  = clean_text($data['email'] ?? '', 150);
 $goal   = clean_text($data['goal'] ?? '', 100);
 $scheme = clean_text($data['scheme'] ?? '', 150);
 
-if ($name === '' || $phone === '' || $email === '' || !preg_match('/\d{6,}/', preg_replace('/\D+/', '', $phone))) {
-    json_response(['result' => 'error', 'message' => 'Nama, WhatsApp, dan email wajib diisi'], 422);
+if ($name === '' || !preg_match('/\d{6,}/', preg_replace('/\D+/', '', $phone))) {
+    json_response(['result' => 'error', 'message' => 'Nama dan nomor WhatsApp wajib diisi'], 422);
 }
+if ($email === '') $email = '-'; // email opsional (form ringkas)
 
 // Batasi spam: maksimal 10 pendaftaran per jam dari alamat IP yang sama.
 $stmt = db()->prepare('SELECT COUNT(*) FROM registrations WHERE ip_hash = ? AND created_at > ?');

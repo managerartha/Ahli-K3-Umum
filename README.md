@@ -59,6 +59,9 @@ admin/                 Dashboard (login, ringkasan, pendaftar, pengaturan, ekspo
 includes/programs.php  Daftar program pelatihan
 includes/              Kode bersama (database, login, tampilan); tidak bisa diakses publik
 data/                  Database SQLite; tidak bisa diakses publik
+kebijakan-privasi/     Halaman kebijakan privasi (dipakai semua landing page)
+assets/css/            CSS landing page hasil build Tailwind
+tools/                 Konfigurasi & skrip build CSS: bash tools/build-css.sh (jalankan setelah mengubah landing page)
 apps-script/Code.gs    Webhook Google Apps Script lama (tidak dipakai, arsip)
 ```
 

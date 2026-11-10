@@ -69,6 +69,31 @@ admin_nav('pengaturan.php', $user);
           </div>
         </div>
 
+        <!-- Promo & kuota (urgensi di landing page) -->
+        <div class="px-5 sm:px-6 py-4 border-t border-slate-100">
+          <h3 class="text-sm font-extrabold text-brand-navy mb-1"><i class="fa-solid fa-fire mr-1.5 text-red-500"></i>Promo &amp; Kuota (urgensi di landing page)</h3>
+          <p class="text-xs text-slate-500 mb-3">Tampil di bar atas, hero, bagian biaya, dan bar bawah HP. Kosongkan kolom yang tidak ingin ditampilkan. <strong>Perbarui sisa kursi setiap ada peserta yang bayar DP</strong> supaya angkanya selalu jujur.</p>
+          <form method="post" action="action.php" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="save_urgency">
+            <input type="hidden" name="program" value="<?= e($slug) ?>">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Harga promo berlaku s/d</label>
+              <input type="date" name="promo_end" value="<?= e(get_setting('promo_end', $slug)) ?>" class="<?= input_class() ?>">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Total kursi batch</label>
+              <input type="number" min="0" max="999" name="quota_total" value="<?= e(get_setting('quota_total', $slug)) ?>" placeholder="contoh: 30" class="<?= input_class() ?>">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Sisa kursi</label>
+              <input type="number" min="0" max="999" name="quota_left" value="<?= e(get_setting('quota_left', $slug)) ?>" placeholder="contoh: 8" class="<?= input_class() ?>">
+            </div>
+            <button class="bg-brand-navy hover:bg-brand-blue text-white font-bold text-sm px-5 py-2.5 rounded-xl">Simpan</button>
+          </form>
+          <p class="text-[11px] text-slate-400 mt-2">Hitung mundur ke hari pertama pelatihan otomatis dari <em>Tanggal mulai</em> batch di atas.</p>
+        </div>
+
         <!-- Kata kunci kampanye -->
         <div class="px-5 sm:px-6 py-4 border-t border-slate-100 bg-slate-50/60 rounded-b-2xl">
           <form method="post" action="action.php" class="flex flex-col md:flex-row md:items-end gap-3">
