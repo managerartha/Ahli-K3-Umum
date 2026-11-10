@@ -1516,18 +1516,6 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         </div>
 
         <div class="lg:col-span-7 flex flex-col justify-center">
-          <h3 class="text-2xl sm:text-3xl font-extrabold text-brand-navy mb-2 tracking-tight">
-            Fasilitas & Training Kit Lengkap
-          </h3>
-
-          <p class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-brand-blue mb-4">
-            STANDAR RESMI PEMBINAAN KEMNAKER RI · BLENDED &amp; FULL OFFLINE
-          </p>
-
-          <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal mb-6">
-            Selama mengikuti program pembinaan Ahli K3 Umum bersama PT Artha Safety Indonesia, peserta akan mendapatkan fasilitas komprehensif untuk menunjang kenyamanan, kualitas belajar, serta kesiapan implementasi dokumen di tempat kerja secara optimal.
-          </p>
-
           <?php
           $facGroups = [
               ['Semua skema &amp; paket', 'bg-brand-subtle text-brand-blue', 'fa-layer-group', [
@@ -1545,7 +1533,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
               ]],
           ];
           ?>
-          <div class="space-y-3 pt-5 border-t border-slate-200/80">
+          <div class="space-y-3">
             <?php foreach ($facGroups as [$title, $badge, $icon, $items]): ?>
               <div class="bg-white rounded-2xl border border-slate-200/80 p-4">
                 <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full <?= $badge ?>"><i class="fa-solid <?= $icon ?>"></i><?= $title ?></span>
