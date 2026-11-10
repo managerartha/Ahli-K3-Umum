@@ -104,7 +104,8 @@ $waNumber = '6281337261261';
   <meta property="og:image" content="<?= $h($siteBase) ?>/assets/img/dok-graduation.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#071C6E">
-  <link rel="icon" href="../assets/img/logo-artha.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 
   <!-- Meta Pixel Code -->
   <script>

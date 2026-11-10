@@ -9,7 +9,8 @@ $updated = '10 November 2026';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kebijakan Privasi | Artha Safety Indonesia</title>
   <meta name="description" content="Kebijakan privasi PT Artha Safety Indonesia untuk data yang dikirim melalui landing page pelatihan.">
-  <link rel="icon" href="../assets/img/logo-artha.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
