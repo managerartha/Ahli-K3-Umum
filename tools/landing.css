@@ -2,28 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Gaya khusus landing page (judul, animasi) ada di tag <style> di dalam masing-masing halaman. */
 @layer components {
-  .hero-title { @apply font-extrabold tracking-tight; letter-spacing: -0.03em; }
-  .eyebrow { @apply text-xs sm:text-sm font-extrabold uppercase tracking-wider text-brand-blue flex items-center gap-2; }
-  .eyebrow::before { content: ''; @apply inline-block w-6 h-1.5 rounded-full bg-brand-accent; }
-  .section-title { @apply hero-title text-3xl sm:text-4xl lg:text-[2.6rem] leading-tight text-brand-navy mt-2; }
-  .section-lead { @apply mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl; }
-}
-
-/* Logo & ulasan bergulir */
-@keyframes marqueeLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-.animate-marquee-left, .animate-marquee-right { display: flex; width: max-content; }
-.animate-marquee-left { animation: marqueeLeft 50s linear infinite; }
-.animate-marquee-right { animation: marqueeRight 50s linear infinite; }
-.marquee-container:hover .animate-marquee-left, .marquee-container:hover .animate-marquee-right { animation-play-state: paused; }
-
-/* Galeri dokumentasi */
-@keyframes docSlideOutUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-100%); opacity: .6; } }
-@keyframes docSlideInUp { from { transform: translateY(100%); opacity: .6; } to { transform: translateY(0); opacity: 1; } }
-.animate-slide-out-up { animation: docSlideOutUp .46s cubic-bezier(.16,1,.3,1) forwards; }
-.animate-slide-in-up { animation: docSlideInUp .46s cubic-bezier(.16,1,.3,1) forwards; }
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee-left, .animate-marquee-right, .animate-slide-in-up, .animate-slide-out-up { animation: none; }
+  .hero-title { letter-spacing: -0.035em; line-height: 1.08; font-weight: 900; }
 }

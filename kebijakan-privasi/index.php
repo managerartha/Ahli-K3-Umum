@@ -9,7 +9,7 @@ $updated = '10 November 2026';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kebijakan Privasi | Artha Safety Indonesia</title>
   <meta name="description" content="Kebijakan privasi PT Artha Safety Indonesia untuk data yang dikirim melalui landing page pelatihan.">
-  <link rel="icon" href="https://arthasafetyindonesia.co.id/ads/assets/logo-artha.svg" type="image/svg+xml">
+  <link rel="icon" href="https://arthasafetyindonesia.co.id/landing/assets/images/home/logo_artha.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@ $updated = '10 November 2026';
 <body class="bg-white text-slate-700 font-sans antialiased">
   <header class="border-b border-slate-100">
     <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="../"><img src="https://arthasafetyindonesia.co.id/ads/assets/logo-artha.svg" alt="Artha Safety Indonesia" class="h-9 w-auto" width="150" height="36"></a>
+      <a href="../"><img src="https://arthasafetyindonesia.co.id/landing/assets/images/home/logo_artha.png" alt="Artha Safety Indonesia" class="h-9 w-auto" width="150" height="36"></a>
       <a href="javascript:history.back()" class="text-sm font-bold text-brand-blue">← Kembali</a>
     </div>
   </header>
