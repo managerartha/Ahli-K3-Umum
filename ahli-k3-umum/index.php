@@ -544,7 +544,7 @@ $waNumber = '6281337261261';
                     <span>BATCH TERDEKAT</span>
                   </div>
                   <h4 class="font-bold text-brand-navy text-sm leading-snug"><?= $h($batchLong) ?></h4>
-                  <p class="text-[11px] mt-0.5 font-semibold <?= $quotaFull ? 'text-red-600' : 'text-slate-600' ?>"><?= $hasQuota ? $h($quotaText) : 'Kuota Terbatas' ?></p>
+                  <p class="text-[11px] mt-0.5 font-semibold <?= $quotaFull ? 'text-red-600' : 'text-slate-600' ?>"><?= $quotaFull ? 'Kuota batch ini penuh' : 'Kuota terbatas · cukup DP' ?></p>
                 </div>
 
                 <div class="sm:col-span-3 sm:text-right">
@@ -567,9 +567,24 @@ $waNumber = '6281337261261';
                   </div>
                 <?php endif; ?>
                 <div>
-                  <?php if ($hasQuota && $quotaTotal): ?>
-                    <div class="flex justify-between text-[11px] font-bold mb-1"><span class="<?= $quotaFull ? 'text-red-600' : 'text-brand-navy' ?>"><?= $h($quotaText) ?></span><span class="text-slate-400"><?= $quotaPct ?>% terisi</span></div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-brand-accent to-lime-500 h-full rounded-full" style="width: <?= $quotaPct ?>%"></div></div>
+                  <?php if ($hasQuota): ?>
+                    <div class="rounded-xl border <?= $quotaFull ? 'border-red-200 bg-red-50' : 'border-red-100 bg-red-50/60' ?> p-3.5">
+                      <div class="flex items-center justify-between gap-3">
+                        <div>
+                          <p class="text-[11px] font-bold uppercase tracking-wider text-red-600 mb-0.5"><i class="fa-solid fa-user-group mr-1"></i>Sisa kursi batch ini</p>
+                          <?php if ($quotaFull): ?>
+                            <p class="text-lg font-black text-red-600 leading-tight">Kuota penuh</p>
+                          <?php else: ?>
+                            <p class="font-black text-brand-navy leading-none"><span class="text-3xl text-red-600"><?= (int) $quotaLeft ?></span><?php if ($quotaTotal): ?><span class="text-sm text-slate-500 font-bold"> / <?= (int) $quotaTotal ?> kursi</span><?php else: ?><span class="text-sm text-slate-500 font-bold"> kursi lagi</span><?php endif; ?></p>
+                          <?php endif; ?>
+                        </div>
+                        <?php if (!$quotaFull): ?><a href="#registration" class="flex-shrink-0 text-[11px] font-extrabold bg-brand-navy text-white px-3 py-2 rounded-lg hover:bg-brand-blue transition">Amankan Kursi</a><?php endif; ?>
+                      </div>
+                      <?php if ($quotaTotal): ?>
+                        <div class="w-full bg-white h-2 rounded-full overflow-hidden mt-2.5"><div class="bg-gradient-to-r from-amber-400 to-red-500 h-full rounded-full" style="width: <?= $quotaPct ?>%"></div></div>
+                        <p class="text-[10px] text-slate-500 font-semibold mt-1"><?= $quotaPct ?>% kursi sudah terisi</p>
+                      <?php endif; ?>
+                    </div>
                   <?php endif; ?>
                   <?php if ($promoActive): ?>
                     <p class="text-[11px] font-bold text-red-600 mt-2"><i class="fa-solid fa-fire mr-1"></i><?= $h($promoText) ?>, setelah itu kembali ke harga normal.</p>
@@ -1513,35 +1528,34 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             Selama mengikuti program pembinaan Ahli K3 Umum bersama PT Artha Safety Indonesia, peserta akan mendapatkan fasilitas komprehensif untuk menunjang kenyamanan, kualitas belajar, serta kesiapan implementasi dokumen di tempat kerja secara optimal.
           </p>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-4 border-t border-slate-200/80">
-            <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Pin & Lencana Ahli K3 <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-subtle text-brand-blue ml-1 align-middle">Semua paket</span></span>
-            </div>
-            <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Coffee break 2× & makan siang (hari 10–12) <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-subtle text-brand-blue ml-1 align-middle">Semua paket</span></span>
-            </div>
-            <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Career support, konsultasi & webinar 1 tahun <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-subtle text-brand-blue ml-1 align-middle">Semua paket</span></span>
-            </div>
-            <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Modul hardcopy & himpunan perundang-undangan K3 <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Blended Full &amp; Offline</span></span>
-            </div>
-            <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Kemeja & t-shirt safety <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Blended Full &amp; Offline</span></span>
-            </div>
-            <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Training kit: tumbler, ransel, blocknote, pulpen <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Blended Full &amp; Offline</span></span>
-              <div class="flex items-start gap-2.5">
-              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Wisata Lava Tour Merapi <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-navy text-white ml-1 align-middle">Full Offline</span></span>
-            </div>
-          </div>
+          <?php
+          $facGroups = [
+              ['Semua skema &amp; paket', 'bg-brand-subtle text-brand-blue', 'fa-layer-group', [
+                  'Pin &amp; lencana Ahli K3',
+                  'Coffee break 2× &amp; makan siang saat tatap muka',
+                  'Career support, konsultasi &amp; webinar 1 tahun',
+              ]],
+              ['Paket Full (Blended) &amp; Full Offline', 'bg-brand-accent/30 text-brand-dark', 'fa-box-open', [
+                  'Modul hardcopy &amp; himpunan perundang-undangan K3',
+                  'Kemeja &amp; t-shirt safety',
+                  'Training kit: tumbler, ransel, blocknote, pulpen',
+              ]],
+              ['Khusus Full Offline', 'bg-brand-navy text-white', 'fa-mountain-sun', [
+                  'Wisata Lava Tour Merapi',
+              ]],
+          ];
+          ?>
+          <div class="space-y-3 pt-5 border-t border-slate-200/80">
+            <?php foreach ($facGroups as [$title, $badge, $icon, $items]): ?>
+              <div class="bg-white rounded-2xl border border-slate-200/80 p-4">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full <?= $badge ?>"><i class="fa-solid <?= $icon ?>"></i><?= $title ?></span>
+                <ul class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2">
+                  <?php foreach ($items as $it): ?>
+                    <li class="flex items-start gap-2.5 text-xs sm:text-sm font-bold text-slate-800"><i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i><span><?= $it ?></span></li>
+                  <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
 
