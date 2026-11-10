@@ -44,13 +44,22 @@ $quotaText = !$hasQuota ? '' : ($quotaFull ? 'Kuota batch ini penuh' : 'Sisa ' .
 $batchStartTs = strtotime($batchStart . ' 08:00:00');
 $batchStarted = time() >= $batchStartTs;
 
-// ---------- Harga (normal → promo): jalur × penginapan × paket ----------
+// ---------- Harga ----------
+// Blended: jalur × penginapan × paket, [harga normal, harga sekarang].
 $prices = [
     'umum'   => ['non' => ['basic' => [4850000, 3850000], 'full' => [5200000, 4200000]], 'inap' => ['basic' => [5350000, 4350000], 'full' => [5700000, 4700000]]],
     'utusan' => ['non' => ['basic' => [6550000, 5550000], 'full' => [7000000, 6000000]], 'inap' => ['basic' => [7000000, 6000000], 'full' => [7450000, 6450000]]],
 ];
+// Full Offline 12 hari: [harga normal (null = tanpa harga coret), harga sekarang].
+$offlinePrices = [
+    'umum'   => [null, 5000000],
+    'utusan' => [null, 6500000],
+];
 $packageLabel = function ($cat, $stay, $tier) use ($prices, $rp) {
-    return ($cat === 'umum' ? 'Umum' : 'Perusahaan') . ' · ' . ($stay === 'non' ? 'Non penginapan' : 'Penginapan') . ' · ' . ucfirst($tier) . ' (' . $rp($prices[$cat][$stay][$tier][1]) . ')';
+    return 'Blended · ' . ($cat === 'umum' ? 'Umum' : 'Perusahaan') . ' · ' . ($stay === 'non' ? 'Non penginapan' : 'Penginapan') . ' · ' . ucfirst($tier) . ' (' . $rp($prices[$cat][$stay][$tier][1]) . ')';
+};
+$offlineLabel = function ($cat) use ($offlinePrices, $rp) {
+    return 'Full Offline 12 hari · ' . ($cat === 'umum' ? 'Umum' : 'Perusahaan') . ' (' . $rp($offlinePrices[$cat][1]) . ')';
 };
 $fromNormal = 4850000;
 $fromPromo = 3850000;
@@ -59,12 +68,12 @@ $bonusValue = 1250000;
 $faqs = [
     ['Saya bukan lulusan K3, apakah bisa ikut?', 'Sangat bisa! Syarat kepesertaan Ahli K3 Umum terbuka untuk minimal D3/D4/S1 dari <strong>semua jurusan</strong> (Teknik, MIPA, Ekonomi, Sosial, Kesehatan, dll.). Seluruh modul disusun dari dasar dan dipandu sampai siap ujian.'],
     ['Saya baru lulus dan ijazah belum keluar. Bisa daftar?', 'Belum bisa. Sesuai regulasi Kemnaker RI, peserta wajib memiliki ijazah asli atau legalisir cap basah, minimal D3 atau S1 semua jurusan. Kamu bisa konsultasi dulu dan mengamankan kursi untuk batch berikutnya.'],
-    ['Bagaimana kelas online-nya berlangsung?', 'Hari 1–9 lewat <strong>Live Zoom</strong>, dua sesi setiap hari (08.00–12.00 dan 13.00–16.00 WIB). Siapkan laptop/tablet dan internet yang stabil.'],
-    ['Kenapa ada sesi tatap muka?', 'Hari 10–12 tatap muka di Emersia Malioboro Hotel Yogyakarta untuk <strong>Praktek Kerja Lapangan (PKL)</strong> di industri, seminar laporan, dan ujian yang diuji langsung oleh tim evaluator.'],
-    ['Saya tinggal di luar Jogja, bagaimana?', 'Mayoritas peserta kami dari luar kota. Sesi online diikuti dari rumah, hanya 3 hari ke Yogyakarta. Tersedia paket <strong>dengan penginapan</strong> supaya kamu tidak perlu repot mencari hotel.'],
+    ['Apa beda skema Blended dan Full Offline?', 'Materi, ujian, sertifikat, dan bonusnya <strong>sama</strong>. Bedanya hanya cara belajar: <strong>Blended</strong> = 9 hari online via Zoom + 3 hari tatap muka di Yogyakarta (hemat waktu & biaya perjalanan). <strong>Full Offline</strong> = 12 hari tatap muka penuh di Hotel Emersia Malioboro Yogyakarta, lebih fokus dan bisa berjejaring langsung dengan peserta lain.'],
+    ['Bagaimana kelas online di skema Blended?', 'Hari 1–9 lewat <strong>Live Zoom</strong>, dua sesi setiap hari (08.00–12.00 dan 13.00–16.00 WIB). Siapkan laptop/tablet dan internet yang stabil. Hari 10–12 tatap muka untuk PKL, seminar, dan ujian.'],
+    ['Saya tinggal di luar Jogja, bagaimana?', 'Mayoritas peserta kami dari luar kota. Dengan skema <strong>Blended</strong>, kamu cukup 3 hari ke Yogyakarta dan tersedia paket <strong>dengan penginapan</strong>. Untuk <strong>Full Offline</strong>, tim kami siap membantu koordinasi penginapan selama 12 hari.'],
     ['Apakah harus bayar lunas di awal?', 'Tidak. Cukup <strong>bayar DP untuk mengamankan kursi</strong>, pelunasan bisa di hari pertama pelatihan.'],
     ['Apa beda jalur Umum dan Utusan Perusahaan?', 'Jalur Umum mendapat Sertifikat Calon Ahli K3 Umum Kemnaker RI. Jalur Utusan Perusahaan mendapat Sertifikat, <strong>SKP, dan Lisensi</strong> Ahli K3 Umum Kemnaker RI (wajib surat keterangan bekerja dari perusahaan).'],
-    ['Apa beda paket Basic dan Full?', 'Keduanya mendapat sertifikat resmi dan semua bonus. Paket <strong>Full</strong> ditambah modul cetak, himpunan perundang-undangan K3, dan training kit (tumbler, kemeja & t-shirt safety, ransel, blocknote, pulpen).'],
+    ['Apa beda paket Basic dan Full (skema Blended)?', 'Keduanya mendapat sertifikat resmi dan semua bonus. Paket <strong>Full</strong> ditambah modul cetak, himpunan perundang-undangan K3, dan training kit (tumbler, kemeja & t-shirt safety, ransel, blocknote, pulpen).'],
     ['Apakah sertifikatnya resmi?', '<strong>100% resmi dan sah secara hukum.</strong> Sertifikat, SKP, dan Lisensi diterbitkan Direktorat Bina Kelembagaan K3, Ditjen Binwasnaker & K3 Kemnaker RI, dengan nomor registrasi yang bisa dicek di TemanK3.'],
     ['Berapa lama sertifikatnya berlaku?', 'Sertifikat Ahli K3 Umum berlaku <strong>seumur hidup</strong>. SKP dan Lisensi (utusan perusahaan) berlaku 3 tahun dan dapat diperpanjang melalui PJK3 resmi.'],
     ['Bagaimana kalau nilai ujian teori belum lulus?', 'Peserta mendapat satu kali kesempatan remedial. Mentor juga membimbing persiapan ujian sejak sesi online.'],
@@ -74,7 +83,8 @@ $faqs = [
 ];
 
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') ? 'https' : 'http';
-$pageUrl = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'pelatihan.arthasafetyindonesia.com') . '/' . $PROGRAM . '/';
+$siteBase = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'pelatihan.arthasafetyindonesia.com');
+$pageUrl = $siteBase . '/' . $PROGRAM . '/';
 $waNumber = '6281337261261';
 ?>
 <!DOCTYPE html>
@@ -83,18 +93,18 @@ $waNumber = '6281337261261';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>Pelatihan Ahli K3 Umum Kemnaker RI Blended Yogyakarta - PT Artha Safety Indonesia</title>
-  <meta name="description" content="Pelatihan & sertifikasi Ahli K3 Umum Kemnaker RI: 9 hari online via Zoom + 3 hari tatap muka di Yogyakarta. Batch <?= $h($batchLong) ?>. Mulai <?= $rp($fromPromo) ?>, cukup DP.">
+  <title>Pelatihan Ahli K3 Umum Kemnaker RI Yogyakarta (Blended &amp; Full Offline) - PT Artha Safety Indonesia</title>
+  <meta name="description" content="Pelatihan & sertifikasi Ahli K3 Umum Kemnaker RI di Yogyakarta. Pilih Blended (9 hari online + 3 hari tatap muka) atau Full Offline 12 hari. Batch <?= $h($batchLong) ?>. Mulai <?= $rp($fromPromo) ?>, cukup DP.">
   <link rel="canonical" href="<?= $h($pageUrl) ?>">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PT Artha Safety Indonesia">
   <meta property="og:title" content="Pelatihan Ahli K3 Umum Kemnaker RI · Batch <?= $h($batchShort) ?>">
-  <meta property="og:description" content="9 hari online + 3 hari tatap muka di Yogyakarta. Sertifikat resmi Kemnaker RI, gratis Basic Safety Training & 43 e-sertifikat HSE. Mulai Rp <?= $jt($fromPromo) ?>, cukup DP.">
+  <meta property="og:description" content="Pilih Blended (9 hari online + 3 tatap muka) atau Full Offline 12 hari di Yogyakarta. Sertifikat resmi Kemnaker RI, gratis Basic Safety Training & 43 e-sertifikat HSE. Mulai Rp <?= $jt($fromPromo) ?>, cukup DP.">
   <meta property="og:url" content="<?= $h($pageUrl) ?>">
-  <meta property="og:image" content="https://lh3.googleusercontent.com/d/1O6en3WBWh66rMpWbURaQWMVTnkcGgoEg">
+  <meta property="og:image" content="<?= $h($siteBase) ?>/assets/img/dok-graduation.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#071C6E">
-  <link rel="icon" href="https://arthasafetyindonesia.co.id/landing/assets/images/home/logo_artha.png">
+  <link rel="icon" href="../assets/img/logo-artha.png">
 
   <!-- Meta Pixel Code -->
   <script>
@@ -140,6 +150,8 @@ $waNumber = '6281337261261';
     .pill-on { background: #071C6E; color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
     .pill-off { background: transparent; color: #475569; }
     .stay-on { background: #A6F634; color: #041040; border-color: #A6F634; }
+    .scheme-on { background: #071C6E; color: #fff; border-color: #071C6E; box-shadow: 0 4px 14px 0 rgba(13, 59, 232, 0.25); }
+    .scheme-off { background: #fff; color: #071C6E; border-color: #e2e8f0; }
     .stay-off { background: #fff; color: #475569; border-color: #e2e8f0; }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -208,14 +220,22 @@ $waNumber = '6281337261261';
   </style>
 
   <script>
-    // Pilihan harga: jalur (umum/utusan) × penginapan (non/inap)
-    var pricingState = { cat: 'umum', stay: 'non' };
-    function setPricing(cat, stay) {
+    // Pilihan harga: skema (blended/offline) × jalur (umum/utusan) × penginapan (non/inap, khusus Blended)
+    var pricingState = { scheme: 'blended', cat: 'umum', stay: 'non' };
+    function setPricing(scheme, cat, stay) {
+      if (scheme) pricingState.scheme = scheme;
       if (cat) pricingState.cat = cat;
       if (stay) pricingState.stay = stay;
+      var key = pricingState.scheme === 'offline'
+        ? 'offline-' + pricingState.cat
+        : 'blended-' + pricingState.cat + '-' + pricingState.stay;
       document.querySelectorAll('[data-price-grid]').forEach(function (g) {
-        var on = g.getAttribute('data-price-grid') === pricingState.cat + '-' + pricingState.stay;
+        var on = g.getAttribute('data-price-grid') === key;
         g.classList.toggle('hidden', !on); g.classList.toggle('grid', on);
+      });
+      document.querySelectorAll('[data-pick-scheme]').forEach(function (b) {
+        var on = b.getAttribute('data-pick-scheme') === pricingState.scheme;
+        b.classList.toggle('scheme-on', on); b.classList.toggle('scheme-off', !on);
       });
       document.querySelectorAll('[data-pick-cat]').forEach(function (b) {
         var on = b.getAttribute('data-pick-cat') === pricingState.cat;
@@ -225,6 +245,8 @@ $waNumber = '6281337261261';
         var on = b.getAttribute('data-pick-stay') === pricingState.stay;
         b.classList.toggle('stay-on', on); b.classList.toggle('stay-off', !on);
       });
+      var sp = document.getElementById('stayPicker');
+      if (sp) sp.style.display = pricingState.scheme === 'offline' ? 'none' : '';
     }
 
     function toggleCurriculum(dayNum) {
@@ -301,7 +323,7 @@ $waNumber = '6281337261261';
       var btnText = document.getElementById('toggleAllFaqText');
       var btnIcon = document.getElementById('toggleAllFaqIcon');
 
-      for (var i = 1; i <= 14; i++) {
+      for (var i = 1; i <= 40; i++) {
         var ans = document.getElementById('faq-ans-' + i);
         var icon = document.getElementById('faq-icon-' + i);
         if (ans && icon) {
@@ -363,7 +385,7 @@ $waNumber = '6281337261261';
         <!-- Brand Logo Resmi PT Artha Safety Indonesia -->
         <a href="#" class="flex items-center flex-shrink-0 group py-1">
           <img
-            src="https://arthasafetyindonesia.co.id/landing/assets/images/home/logo_artha.png"
+            src="../assets/img/logo-artha.png"
             alt="PT Artha Safety Indonesia"
             class="h-8 sm:h-11 w-auto max-w-[180px] sm:max-w-[220px] object-contain transition-transform duration-200 group-hover:scale-105"
             onerror="this.onerror=null; this.src='https://placehold.co/200x50/071C6E/ffffff?text=ARTHA+SAFETY';"
@@ -445,8 +467,21 @@ $waNumber = '6281337261261';
           </h1>
 
           <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-8 max-w-2xl">
-            <strong class="text-brand-navy">Belajar dari rumah, praktik di lapangan.</strong> 9 hari materi online via Zoom, lalu 3 hari tatap muka di Emersia Malioboro Yogyakarta. Terbuka untuk lulusan D3, D4, dan S1 semua jurusan, termasuk fresh graduate yang belum punya pengalaman K3.
+            Jadi Ahli K3 Umum bersertifikat resmi Kemnaker RI dalam 12 hari. Terbuka untuk lulusan D3, D4, dan S1 semua jurusan, termasuk fresh graduate yang belum punya pengalaman K3.
           </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 max-w-2xl">
+            <a href="#pricing" onclick="setPricing('blended')" class="rounded-2xl border border-blue-100 bg-brand-subtle/60 hover:border-brand-blue p-4 transition">
+              <p class="text-[11px] font-extrabold uppercase tracking-wider text-brand-blue mb-1"><i class="fa-solid fa-laptop-house mr-1"></i>Skema Blended</p>
+              <p class="text-sm font-bold text-brand-navy leading-snug">9 hari online via Zoom + 3 hari tatap muka di Yogyakarta</p>
+              <p class="text-xs text-slate-500 mt-1">Mulai <span class="line-through text-red-500"><?= $jt($fromNormal) ?></span> <strong class="text-brand-navy">Rp <?= $jt($fromPromo) ?></strong></p>
+            </a>
+            <a href="#pricing" onclick="setPricing('offline')" class="rounded-2xl border border-lime-200/70 bg-lime-50/70 hover:border-lime-500 p-4 transition">
+              <p class="text-[11px] font-extrabold uppercase tracking-wider text-lime-700 mb-1"><i class="fa-solid fa-people-group mr-1"></i>Skema Full Offline</p>
+              <p class="text-sm font-bold text-brand-navy leading-snug">12 hari tatap muka penuh di Hotel Emersia Malioboro</p>
+              <p class="text-xs text-slate-500 mt-1">Mulai <strong class="text-brand-navy">Rp <?= $jt($offlinePrices['umum'][1]) ?></strong></p>
+            </a>
+          </div>
 
           <div class="flex flex-col sm:flex-row gap-3 mb-8">
             <a href="#registration" class="inline-flex items-center justify-center gap-2.5 bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-black text-base px-7 py-4 rounded-2xl transition shadow-lime">
@@ -462,9 +497,9 @@ $waNumber = '6281337261261';
           <!-- Social Proof / Badge Alumni Asli Resmi -->
           <div class="flex flex-wrap items-center gap-4 mb-10 pb-2 border-b border-slate-100">
             <div class="flex -space-x-2.5 overflow-hidden">
-              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/d/1B9OA62DpfHu6KFeSHlKgU37i5jCkYkzD" alt="Alumni K3 1">
-              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/d/1Asd-BiKtyrpoXCXDl2x1zVbqdluuFcla" alt="Alumni K3 2">
-              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/d/1mcax3BankVmKBh4r9mefzsJvph3NRAbc" alt="Alumni K3 3">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover shadow-sm" src="../assets/img/alumni-1.jpg" alt="Alumni K3 1">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover shadow-sm" src="../assets/img/alumni-2.jpg" alt="Alumni K3 2">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover shadow-sm" src="../assets/img/alumni-3.jpg" alt="Alumni K3 3">
               <div class="inline-flex h-10 w-10 items-center justify-center rounded-full ring-2 ring-white bg-brand-navy text-[11px] font-bold text-white shadow-sm">
                 4K+
               </div>
@@ -491,7 +526,7 @@ $waNumber = '6281337261261';
               <span class="text-xs font-bold text-brand-navy uppercase tracking-wider">Ringkasan Program</span>
               <span class="text-xs font-semibold text-brand-blue flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Kelas Blended Yogyakarta
+                Kelas Blended &amp; Full Offline
               </span>
             </div>
 
@@ -500,7 +535,7 @@ $waNumber = '6281337261261';
                 <div class="sm:col-span-4 border-b sm:border-b-0 sm:border-r border-slate-100 pb-4 sm:pb-0">
                   <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">DURASI SERTIFIKASI</p>
                   <p class="text-3xl font-black text-brand-navy tracking-tight">12 Hari</p>
-                  <p class="text-xs text-slate-500 font-medium mt-0.5">9 online + 3 tatap muka</p>
+                  <p class="text-xs text-slate-500 font-medium mt-0.5">Blended atau Full Offline</p>
                 </div>
 
                 <div class="sm:col-span-5 bg-lime-50/70 rounded-xl p-3.5 border border-lime-200/60">
@@ -683,7 +718,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                 Curriculum
               </h2>
               <p class="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
-                Hari 1–9 online via Zoom (08.00–12.00 &amp; 13.00–16.00 WIB), hari 10–12 tatap muka di Emersia Malioboro Yogyakarta.
+                Blended: hari 1–9 online via Zoom, hari 10–12 tatap muka. Full Offline: seluruh 12 hari tatap muka di Emersia Malioboro Yogyakarta.
               </p>
             </div>
 
@@ -1127,7 +1162,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
           <div class="w-full mb-8">
             <div class="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md bg-slate-50 group">
               <img
-                src="https://lh3.googleusercontent.com/d/1NZAFSA0FI4mrz5nG6yJg6AdI0v3nraiR"
+                src="../assets/img/bukti-temank3.jpg"
                 alt="Bukti Legalitas PT Artha Safety Indonesia di Portal TemanK3 Kemnaker RI"
                 class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.01]"
                 onerror="this.onerror=null; this.src='https://placehold.co/800x450/071C6E/ffffff?text=Bukti+Legalitas+TemanK3';"
@@ -1251,7 +1286,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
           <div class="divide-y divide-slate-100 text-xs sm:text-[13px]">
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
               <span class="text-slate-500 font-medium">Durasi Pelatihan</span>
-              <span class="font-extrabold text-brand-navy text-right">9 online + 3 tatap muka</span>
+              <span class="font-extrabold text-brand-navy text-right">12 hari · Blended / Full Offline</span>
             </div>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
               <span class="text-slate-500 font-medium">Batch Terdekat</span>
@@ -1267,7 +1302,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             </div>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
               <span class="text-slate-500 font-medium">Lokasi</span>
-              <span class="font-extrabold text-brand-navy text-right">Zoom + Emersia Malioboro Yogyakarta</span>
+              <span class="font-extrabold text-brand-navy text-right">Hotel Emersia Malioboro Yogyakarta</span>
             </div>
             <?php if ($hasQuota): ?>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
@@ -1305,7 +1340,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <div class="lg:col-span-6 flex flex-col items-center justify-center">
           <div class="relative w-full max-w-[430px] sm:max-w-[460px] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200/90 bg-white group flex items-center justify-center p-2 sm:p-2.5 transition-all duration-300 hover:shadow-[0_25px_50px_-12px_rgba(7,28,110,0.18)]">
             <img
-              src="https://lh3.googleusercontent.com/d/1ydQnc8vwT24SwXUK7HS2JBcynGQSHGCw"
+              src="../assets/img/sertifikat-ak3u.jpg"
               alt="Sertifikat Ahli K3 Umum Kemnaker RI PT Artha Safety Indonesia"
               class="w-full h-auto object-contain rounded-xl sm:rounded-2xl transform transition-transform duration-500 group-hover:scale-[1.015]"
               onerror="this.onerror=null; this.src='https://placehold.co/600x850/071C6E/ffffff?text=Sertifikat+Ahli+K3+Umum+Kemnaker+RI';"
@@ -1457,7 +1492,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <div class="lg:col-span-5 flex justify-center">
           <div class="relative w-full max-w-[420px] rounded-2xl overflow-hidden shadow-md bg-white border border-blue-200/50">
             <img
-              src="https://arthasafetyindonesia.co.id/storage/training-benefits/posters/ZbuNdRnShBnlbfzt4EtJIxYxHaqIpaTmbvy28lvx.png"
+              src="../assets/img/poster-fasilitas.jpg"
               alt="Fasilitas Pelatihan Ahli K3 Umum PT Artha Safety Indonesia"
               class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
               onerror="this.onerror=null; this.src='https://placehold.co/600x800/071C6E/ffffff?text=Fasilitas+Training+Artha+Safety';"
@@ -1471,7 +1506,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
           </h3>
 
           <p class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-brand-blue mb-4">
-            STANDAR RESMI PEMBINAAN KEMNAKER RI · BASIC &amp; FULL
+            STANDAR RESMI PEMBINAAN KEMNAKER RI · BLENDED &amp; FULL OFFLINE
           </p>
 
           <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal mb-6">
@@ -1493,16 +1528,20 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             </div>
             <div class="flex items-start gap-2.5">
               <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Modul hardcopy & himpunan perundang-undangan K3 <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Paket Full</span></span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Modul hardcopy & himpunan perundang-undangan K3 <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Blended Full &amp; Offline</span></span>
             </div>
             <div class="flex items-start gap-2.5">
               <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Kemeja & t-shirt safety <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Paket Full</span></span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Kemeja & t-shirt safety <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Blended Full &amp; Offline</span></span>
             </div>
             <div class="flex items-start gap-2.5">
               <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
-              <span class="text-xs sm:text-sm font-bold text-slate-800">Training kit: tumbler, ransel, blocknote, pulpen <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Paket Full</span></span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Training kit: tumbler, ransel, blocknote, pulpen <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-accent/30 text-brand-dark ml-1 align-middle">Blended Full &amp; Offline</span></span>
+              <div class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Wisata Lava Tour Merapi <span class="inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-brand-navy text-white ml-1 align-middle">Full Offline</span></span>
             </div>
+          </div>
           </div>
         </div>
 
@@ -1704,7 +1743,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 0 -->
         <div id="docSlot0" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="https://lh3.googleusercontent.com/d/16pSUSYQY_Mkd4he5iUJ1JgbZ1RVHTJm7" alt="Praktik Pemadaman Api APAR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img src="../assets/img/dok-apar.jpg" alt="Praktik Pemadaman Api APAR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1723,7 +1762,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 1 -->
         <div id="docSlot1" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="https://lh3.googleusercontent.com/d/1lM46Tm8njbAlHOlrMPSo0MCqrazKAxpc" alt="Observasi Objek Norma K3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img src="../assets/img/dok-observasi-norma.jpg" alt="Observasi Objek Norma K3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1742,7 +1781,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 2 -->
         <div id="docSlot2" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="https://lh3.googleusercontent.com/d/1NJqo1ick-ssTvCQTD1D0qBDwfsK970Cu" alt="Simulasi Evakuasi & Fire Drill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img src="../assets/img/dok-fire-drill.jpg" alt="Simulasi Evakuasi & Fire Drill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1761,7 +1800,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 3 -->
         <div id="docSlot3" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="https://lh3.googleusercontent.com/d/1vLw_oUJ4zRDh7URJi6sHuzfJC_bGKfLZ" alt="Pelatihan Penggunaan SCBA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img src="../assets/img/dok-scba.jpg" alt="Pelatihan Penggunaan SCBA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1799,7 +1838,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             Biaya Pelatihan Ahli K3 Umum Kemnaker 2026
           </h2>
           <p class="text-xs sm:text-sm md:text-base text-slate-500 font-medium">
-            Pilih jalur sesuai status kerja, dengan atau tanpa penginapan. <strong class="text-brand-navy">Cukup bayar DP untuk mengamankan kursi</strong>, pelunasan di hari pertama pelatihan.
+            Pilih skema belajar dan jalur sesuai status kerja. Sertifikat yang didapat sama. <strong class="text-brand-navy">Cukup bayar DP untuk mengamankan kursi</strong>, pelunasan di hari pertama pelatihan.
           </p>
 
           <?php if ($promoActive || $hasQuota): ?>
@@ -1809,21 +1848,33 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
             </div>
           <?php endif; ?>
 
+          <!-- Pill Switcher: skema -->
+          <div class="mt-8 grid grid-cols-2 gap-2 max-w-md mx-auto">
+            <button type="button" data-pick-scheme="blended" onclick="setPricing('blended')" class="scheme-on rounded-2xl border-2 px-3 py-3 text-left transition cursor-pointer">
+              <span class="block text-sm font-black">Blended</span>
+              <span class="block text-[11px] font-semibold opacity-80">9 hari online + 3 tatap muka</span>
+            </button>
+            <button type="button" data-pick-scheme="offline" onclick="setPricing('offline')" class="scheme-off rounded-2xl border-2 px-3 py-3 text-left transition cursor-pointer">
+              <span class="block text-sm font-black">Full Offline</span>
+              <span class="block text-[11px] font-semibold opacity-80">12 hari tatap muka penuh</span>
+            </button>
+          </div>
+
           <!-- Pill Switcher: jalur -->
-          <div class="mt-8 inline-flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80 shadow-inner">
-            <button type="button" data-pick-cat="umum" onclick="setPricing('umum', null)" class="pill-on px-5 sm:px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 cursor-pointer">
+          <div class="mt-4 inline-flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80 shadow-inner">
+            <button type="button" data-pick-cat="umum" onclick="setPricing(null, 'umum')" class="pill-on px-5 sm:px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 cursor-pointer">
               <i class="fa-solid fa-user-graduate text-xs"></i>
               <span>Peserta Umum</span>
             </button>
-            <button type="button" data-pick-cat="utusan" onclick="setPricing('utusan', null)" class="pill-off px-5 sm:px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 cursor-pointer">
+            <button type="button" data-pick-cat="utusan" onclick="setPricing(null, 'utusan')" class="pill-off px-5 sm:px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 cursor-pointer">
               <i class="fa-solid fa-building text-xs"></i>
               <span>Utusan Perusahaan</span>
             </button>
           </div>
-          <!-- Pill Switcher: penginapan -->
-          <div class="mt-3 flex justify-center gap-2 text-xs font-bold">
-            <button type="button" data-pick-stay="non" onclick="setPricing(null, 'non')" class="stay-on px-4 py-2 rounded-full border transition cursor-pointer"><i class="fa-solid fa-house-laptop mr-1"></i>Tanpa penginapan</button>
-            <button type="button" data-pick-stay="inap" onclick="setPricing(null, 'inap')" class="stay-off px-4 py-2 rounded-full border transition cursor-pointer"><i class="fa-solid fa-hotel mr-1"></i>Dengan penginapan</button>
+          <!-- Pill Switcher: penginapan (khusus Blended) -->
+          <div id="stayPicker" class="mt-3 flex justify-center gap-2 text-xs font-bold">
+            <button type="button" data-pick-stay="non" onclick="setPricing(null, null, 'non')" class="stay-on px-4 py-2 rounded-full border transition cursor-pointer"><i class="fa-solid fa-house-laptop mr-1"></i>Tanpa penginapan</button>
+            <button type="button" data-pick-stay="inap" onclick="setPricing(null, null, 'inap')" class="stay-off px-4 py-2 rounded-full border transition cursor-pointer"><i class="fa-solid fa-hotel mr-1"></i>Dengan penginapan</button>
           </div>
         </div>
 
@@ -1836,8 +1887,8 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         $fullExtra = ['Modul hardcopy &amp; himpunan perundang-undangan K3', '<strong>Training kit</strong>: tumbler, kemeja &amp; t-shirt safety, ransel, blocknote, pulpen'];
         foreach ($prices as $cat => $stays):
             foreach ($stays as $stay => $tiers): ?>
-        <div data-price-grid="<?= $cat ?>-<?= $stay ?>" class="<?= $cat === 'umum' && $stay === 'non' ? 'grid' : 'hidden' ?> grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch max-w-4xl mx-auto">
-          <?php foreach ($tiers as $tier => [$normal, $promo]): $pkg = "$cat-$stay-$tier"; $isFull = $tier === 'full'; ?>
+        <div data-price-grid="blended-<?= $cat ?>-<?= $stay ?>" class="<?= $cat === 'umum' && $stay === 'non' ? 'grid' : 'hidden' ?> grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch max-w-4xl mx-auto">
+          <?php foreach ($tiers as $tier => [$normal, $promo]): $pkg = "blended-$cat-$stay-$tier"; $isFull = $tier === 'full'; ?>
             <div class="w-full rounded-3xl p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden <?= $isFull ? 'bg-brand-navy text-white shadow-2xl border border-brand-blue/60 group' : 'bg-white border-2 border-slate-200 shadow-sm transition-all hover:border-brand-blue/50 hover:shadow-md' ?>">
               <?php if ($isFull): ?>
                 <div class="absolute top-0 right-0"><div class="bg-brand-accent text-brand-dark font-black text-[10px] sm:text-xs px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-md">BEST VALUE</div></div>
@@ -1847,7 +1898,8 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                   <span class="text-xs font-black uppercase tracking-wider <?= $isFull ? 'text-brand-accent' : 'text-slate-400' ?>"><?= $isFull ? 'FULL PACKAGE' : 'BASIC PACKAGE' ?></span>
                   <span class="text-[11px] font-bold px-2.5 py-1 rounded-full <?= $isFull ? 'bg-white/10 text-white border border-white/20 mr-20 sm:mr-24' : 'bg-blue-50 text-brand-blue border border-blue-200' ?>"><?= $stay === 'non' ? 'Tanpa penginapan' : 'Dengan penginapan' ?></span>
                 </div>
-                <h3 class="text-2xl font-black mb-1 tracking-tight <?= $isFull ? 'text-white' : 'text-brand-navy' ?>"><?= $cat === 'umum' ? 'Peserta Umum' : 'Utusan Perusahaan' ?> · <?= ucfirst($tier) ?></h3>
+                <h3 class="text-2xl font-black mb-1 tracking-tight <?= $isFull ? 'text-white' : 'text-brand-navy' ?>">Blended · <?= ucfirst($tier) ?></h3>
+                <p class="text-xs font-semibold <?= $isFull ? 'text-slate-300' : 'text-slate-500' ?>"><?= $cat === 'umum' ? 'Peserta Umum' : 'Utusan Perusahaan' ?></p>
                 <div class="my-5">
                   <span class="block text-sm font-bold line-through <?= $isFull ? 'text-red-300' : 'text-red-500' ?>"><?= $rp($normal) ?></span>
                   <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight <?= $isFull ? 'text-brand-accent' : 'text-brand-navy' ?>"><?= $rp($promo) ?></span>
@@ -1871,8 +1923,59 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         </div>
         <?php endforeach; endforeach; ?>
 
+        <?php
+        $offlineFeatures = [
+            'umum' => ['Sertifikat Calon Ahli K3 Umum Kemnaker RI'],
+            'utusan' => ['Sertifikat, <strong>SKP &amp; Lisensi</strong> Kemnaker RI (berlaku 3 tahun)'],
+        ];
+        $offlineCommon = ['<strong>12 hari</strong> tatap muka penuh di Hotel Emersia Malioboro', 'Modul hardcopy &amp; himpunan perundang-undangan K3', '<strong>Training kit</strong> eksklusif', 'Free Basic Safety Training (Damkar &amp; PMI)', 'Free 43 e-sertifikat HSE Bootcamp', 'Wisata Lava Tour Merapi', 'Career support, konsultasi &amp; webinar 1 tahun'];
+        foreach ($offlinePrices as $cat => [$normal, $promo]): ?>
+        <div data-price-grid="offline-<?= $cat ?>" class="hidden grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch max-w-4xl mx-auto">
+          <div class="w-full bg-white rounded-3xl p-7 sm:p-9 border-2 border-slate-200 shadow-sm flex flex-col">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">BLENDED VS FULL OFFLINE</span>
+            <h3 class="text-2xl font-black text-brand-navy mb-4 tracking-tight">Sertifikatnya sama, bedanya cara belajar</h3>
+            <div class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <?php foreach ([['Lama pelatihan', '12 hari', '12 hari'], ['Materi hari 1–9', 'Online via Zoom', 'Tatap muka'], ['PKL, seminar &amp; ujian', 'Tatap muka', 'Tatap muka'], ['Ke Yogyakarta', '3 hari', '12 hari'], ['Sertifikat &amp; bonus', 'Sama', 'Sama'], ['Wisata Lava Tour Merapi', '–', 'Ya']] as [$k, $bl, $of]): ?>
+                <div class="grid grid-cols-3 gap-2 py-2.5">
+                  <span class="text-slate-500 font-medium"><?= $k ?></span>
+                  <span class="font-bold text-brand-navy text-center"><?= $bl ?></span>
+                  <span class="font-bold text-brand-blue text-center"><?= $of ?></span>
+                </div>
+              <?php endforeach; ?>
+            </div>
+            <div class="grid grid-cols-3 gap-2 pt-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400"><span></span><span class="text-center">Blended</span><span class="text-center">Full Offline</span></div>
+            <button type="button" onclick="setPricing('blended')" class="mt-auto pt-6 text-sm font-bold text-brand-blue hover:text-brand-navy text-left cursor-pointer"><i class="fa-solid fa-arrow-left text-xs mr-1"></i>Lihat harga Blended (mulai Rp <?= $jt($fromPromo) ?>)</button>
+          </div>
+
+          <div class="w-full bg-brand-navy text-white rounded-3xl p-7 sm:p-9 shadow-2xl relative flex flex-col justify-between border border-brand-blue/60 overflow-hidden">
+            <div class="absolute top-0 right-0"><div class="bg-brand-accent text-brand-dark font-black text-[10px] sm:text-xs px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-md">12 HARI TATAP MUKA</div></div>
+            <div>
+              <span class="text-xs font-black uppercase tracking-wider text-brand-accent">FULL OFFLINE</span>
+              <h3 class="text-2xl font-black text-white mt-3 mb-1 tracking-tight"><?= $cat === 'umum' ? 'Peserta Umum' : 'Utusan Perusahaan' ?></h3>
+              <div class="my-5">
+                <?php if ($normal): ?><span class="block text-sm font-bold line-through text-red-300"><?= $rp($normal) ?></span><?php endif; ?>
+                <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-brand-accent"><?= $rp($promo) ?></span>
+                <p class="text-xs font-bold mt-1.5 text-brand-accent"><?= $normal ? 'Hemat Rp ' . $jt($normal - $promo) . ' · ' : '' ?>cukup DP untuk amankan kursi</p>
+              </div>
+              <div class="w-full border-t my-6 border-white/15"></div>
+              <div class="space-y-3.5 text-xs sm:text-sm text-slate-200">
+                <?php foreach (array_merge($offlineFeatures[$cat], $offlineCommon) as $f): ?>
+                  <div class="flex items-start gap-3"><i class="fa-solid fa-check text-xs mt-1 flex-shrink-0 text-brand-accent"></i><span><?= $f ?></span></div>
+                <?php endforeach; ?>
+              </div>
+              <p class="mt-4 text-[11px] text-slate-400">Butuh penginapan selama 12 hari? Admin siap bantu koordinasi hotel.</p>
+            </div>
+            <div class="mt-8 pt-4">
+              <a href="#registration" onclick="pickPackage('offline-<?= $cat ?>')" class="w-full font-black text-sm py-3.5 px-5 rounded-2xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer bg-brand-accent hover:bg-brand-accentHover text-brand-dark shadow-lime">
+                <span>Pilih Full Offline</span><i class="fa-solid fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
+
         <div class="max-w-4xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div class="rounded-2xl bg-brand-subtle border border-blue-100 p-4"><p class="font-extrabold text-brand-navy mb-1"><i class="fa-solid fa-utensils text-brand-blue mr-1.5"></i>Semua paket termasuk</p><p class="text-slate-600">Coffee break 2× &amp; makan siang selama tatap muka (hari 10–12), pin &amp; lencana K3.</p></div>
+          <div class="rounded-2xl bg-brand-subtle border border-blue-100 p-4"><p class="font-extrabold text-brand-navy mb-1"><i class="fa-solid fa-utensils text-brand-blue mr-1.5"></i>Semua paket termasuk</p><p class="text-slate-600">Coffee break &amp; makan siang selama sesi tatap muka, pin &amp; lencana K3.</p></div>
           <div class="rounded-2xl bg-lime-50/70 border border-lime-200/60 p-4"><p class="font-extrabold text-brand-navy mb-1"><i class="fa-solid fa-wallet text-lime-700 mr-1.5"></i>Bayar bertahap</p><p class="text-slate-600">Cukup DP untuk mengunci kursi, pelunasan di hari pertama pelatihan. Admin mengonfirmasi biaya final sebelum invoice terbit.</p></div>
         </div>
       </div>
@@ -1893,7 +1996,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <div class="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
           <h3 class="text-lg font-extrabold text-brand-navy mb-5"><span class="inline-flex w-7 h-7 rounded-lg bg-brand-accent text-brand-dark items-center justify-center text-sm font-black mr-2">A</span>Dokumen persyaratan</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <?php foreach ([['fa-graduation-cap', 'Ijazah D3/S1', 'Semua jurusan, asli atau legalisir cap basah'], ['fa-id-card', 'Scan KTP', 'Jelas dan terbaca'], ['fa-image-portrait', 'Pas foto', 'Latar belakang merah'], ['fa-file-signature', 'Surat pernyataan', 'Pernyataan personel & pakta integritas'], ['fa-building', 'Surat keterangan bekerja', 'Khusus utusan perusahaan'], ['fa-laptop', 'Laptop/tablet', 'Bisa mengoperasikan Zoom']] as [$i, $t, $d]): ?>
+            <?php foreach ([['fa-graduation-cap', 'Ijazah D3/S1', 'Semua jurusan, asli atau legalisir cap basah'], ['fa-id-card', 'Scan KTP', 'Jelas dan terbaca'], ['fa-image-portrait', 'Pas foto', 'Latar belakang merah'], ['fa-file-signature', 'Surat pernyataan', 'Pernyataan personel & pakta integritas'], ['fa-building', 'Surat keterangan bekerja', 'Khusus utusan perusahaan'], ['fa-laptop', 'Laptop/tablet', 'Khusus Blended, bisa mengoperasikan Zoom']] as [$i, $t, $d]): ?>
               <div class="flex items-start gap-3">
                 <div class="w-9 h-9 rounded-xl bg-brand-subtle text-brand-blue flex items-center justify-center flex-shrink-0"><i class="fa-solid <?= $i ?> text-sm"></i></div>
                 <div><p class="text-sm font-extrabold text-brand-navy"><?= $t ?></p><p class="text-xs text-slate-500"><?= $d ?></p></div>
@@ -2060,9 +2163,16 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
                 </label>
                 <select id="regSelectedScheme" class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-blue/30 focus:border-brand-navy text-xs sm:text-sm font-semibold text-slate-800 bg-white">
                   <option value="Belum tahu, mohon dibantu">Belum tahu, mohon dibantu</option>
+                  <optgroup label="Blended (9 hari online + 3 tatap muka)">
                   <?php foreach ($prices as $cat => $stays): foreach ($stays as $stay => $tiers): foreach ($tiers as $tier => $_): $lbl = $packageLabel($cat, $stay, $tier); ?>
-                    <option value="<?= $h($lbl) ?>" data-pkg="<?= "$cat-$stay-$tier" ?>"><?= $h($lbl) ?></option>
+                    <option value="<?= $h($lbl) ?>" data-pkg="<?= "blended-$cat-$stay-$tier" ?>"><?= $h($lbl) ?></option>
                   <?php endforeach; endforeach; endforeach; ?>
+                  </optgroup>
+                  <optgroup label="Full Offline (12 hari tatap muka)">
+                  <?php foreach ($offlinePrices as $cat => $_): $lbl = $offlineLabel($cat); ?>
+                    <option value="<?= $h($lbl) ?>" data-pkg="offline-<?= $cat ?>"><?= $h($lbl) ?></option>
+                  <?php endforeach; ?>
+                  </optgroup>
                 </select>
               </div>
 
@@ -2231,7 +2341,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
 
           <div class="flex items-end justify-center shrink-0 -mb-[1px]">
             <img
-              src="https://arthasafetyindonesia.co.id/landing/assets/images/inhouse/cta.png"
+              src="../assets/img/komunitas.jpg"
               alt="Safety Champions Community Artha Safety"
               class="h-72 sm:h-84 md:h-96 lg:h-[390px] xl:h-[440px] w-auto object-contain object-bottom block drop-shadow-sm transition-transform duration-300 hover:scale-[1.02]"
               onerror="this.onerror=null; this.src='https://placehold.co/320x440/071C6E/ffffff?text=Community+Artha+Safety';"
@@ -2264,7 +2374,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
           <div class="space-y-4">
             <a href="#" class="inline-block">
               <img
-                src="https://arthasafetyindonesia.co.id/landing/assets/images/home/logo_artha.png"
+                src="../assets/img/logo-artha.png"
                 alt="PT Artha Safety Indonesia"
                 class="h-10 sm:h-11 w-auto object-contain"
                 onerror="this.onerror=null; this.src='https://placehold.co/200x50/071C6E/ffffff?text=ARTHA+SAFETY';"
@@ -2554,61 +2664,61 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
     // 10 Foto Dokumentasi Resmi K3 PT Artha Safety Indonesia
     var docPhotosList = [
       {
-        url: "https://lh3.googleusercontent.com/d/1O6en3WBWh66rMpWbURaQWMVTnkcGgoEg",
+        url: "../assets/img/dok-graduation.jpg",
         title: "Graduation",
         category: "Ahli K3 Umum Kemnaker",
         badge: "Ujian Seminar"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1Qh7w7vsbv0r1I0eSX-0q5D7GqVUM3h9M",
+        url: "../assets/img/dok-observasi-industri.jpg",
         title: "Observasi Industri",
         category: "Praktek Kerja Lapangan (PKL)",
         badge: "Kunjungan Pabrik AK3U Yogyakarta"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1cPfwDuq-o69oVElPewiEvSlNkluisc7G",
+        url: "../assets/img/dok-fire-fighting.jpg",
         title: "Simulasi Evakuasi & Fire Fighting",
         category: "Inhouse Training",
         badge: "Instruktur Damkar Kota"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1hiVin3LLW3V4pdgBIVPTlkedVJUGabfV",
+        url: "../assets/img/dok-p3k.jpg",
         title: "Praktek P3K",
         category: "Inhouse Training",
         badge: "Instruktur PMI"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1rqnH9cfwxXPIiw8LtobMTHJh0_-F-sYy",
+        url: "../assets/img/dok-observasi-adi-satria.jpg",
         title: "Observasi Industri",
         category: "PRaktek Kerja Lapangan (PKL)",
         badge: "PT Adi Satria Abadi"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/173bK5ROrOkpYi7ZXLEL_5EhcgDuTc1b-",
+        url: "../assets/img/dok-ujian-teori-1.jpg",
         title: "Ujian Teori",
         category: "AK3U Kemnaker RI",
         badge: "Offline TemanK3"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1SjnE0IT9IjvECTlXBVKjG6erSlrdzk2s",
+        url: "../assets/img/dok-ujian-teori-2.jpg",
         title: "Ujian Teori",
         category: "AK3U Kemnaker RI",
         badge: "Offline TemanK3"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1iHDiu1ExjJMmNDPi6BARbfK--iqgRapD",
+        url: "../assets/img/dok-pertamina.jpg",
         title: "PT Pertamina",
         category: "Sertifikasi K3 Migas",
         badge: "Inhouse Training"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/13CH9-GSPUPf-fj6P-un2VxIyTWzuJnrp",
+        url: "../assets/img/dok-materi-kelas.jpg",
         title: "Materi Kelas",
         category: "Bimbingan Mentor Praktisi",
         badge: "Offline Training"
       },
       {
-        url: "https://lh3.googleusercontent.com/d/1ULTlKlDln-qtSpnZfXvDc3DXcl_zF1t3",
+        url: "../assets/img/dok-lava-tour.jpg",
         title: "Wisata Gratis",
         category: "Lava tour Merapi",
         badge: "Fasilitas Pelatihan"
@@ -2712,7 +2822,7 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
       var scheme = document.getElementById('regSelectedScheme').value;
       if (!name || !phone) return false;
 
-      var message = 'Halo PT Artha Safety Indonesia, saya ingin daftar Pelatihan Ahli K3 Umum Kemnaker RI (Blended Yogyakarta).\n\n' +
+      var message = 'Halo PT Artha Safety Indonesia, saya ingin daftar Pelatihan Ahli K3 Umum Kemnaker RI di Yogyakarta.\n\n' +
         '*Nama:* ' + name + '\n' +
         '*No. WhatsApp:* ' + phone + '\n' +
         '*Paket:* ' + scheme + '\n' +
