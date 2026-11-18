@@ -64,6 +64,7 @@ data/                  Database SQLite; tidak bisa diakses publik
 kebijakan-privasi/     Halaman kebijakan privasi (dipakai semua landing page)
 assets/css/            CSS landing page hasil build Tailwind
 tools/                 Konfigurasi & skrip build CSS: bash tools/build-css.sh (jalankan setelah mengubah landing page)
+                       Ikon: python3 tools/build-icons.py <folder fontawesome-free 6.5.1> (jalankan setelah menambah ikon baru)
 apps-script/Code.gs    Webhook Google Apps Script lama (tidak dipakai, arsip)
 ```
 

@@ -129,10 +129,10 @@ $waNumber = '6281337261261';
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"></noscript>
 
-  <!-- Font Awesome Icons -->
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+  <!-- Ikon (Font Awesome Free, hanya ikon yang dipakai; lihat tools/build-icons.py) -->
+  <?php $iconsCss = '../assets/css/icons.css?v=' . (@filemtime(dirname(__DIR__) . '/assets/css/icons.css') ?: 1); ?>
+  <link rel="stylesheet" href="<?= $iconsCss ?>" media="print" onload="this.onload=null;this.media='all'">
+  <noscript><link rel="stylesheet" href="<?= $iconsCss ?>"></noscript>
 
   <!-- Tampilan: CSS hasil build Tailwind (lihat tools/build-css.sh) -->
   <link rel="stylesheet" href="../assets/css/ahli-k3-umum.css?v=<?= @filemtime(dirname(__DIR__) . '/assets/css/ahli-k3-umum.css') ?: 1 ?>">
