@@ -13,6 +13,7 @@ tanpa Google Apps Script atau Spreadsheet.
 | Alamat | Isi |
 |---|---|
 | `/ahli-k3-umum/` | Landing page Ahli K3 Umum Kemnaker RI |
+| `/ahli-k3-umum-bnsp/` | Landing page Ahli K3 Umum BNSP (online) |
 | `/admin/` | Dashboard (login) |
 | `/` | Otomatis diarahkan ke program pertama |
 
@@ -52,7 +53,8 @@ Pilihan program di kanan atas dashboard: **Semua program** atau satu program ter
 
 ```
 index.php              Mengarahkan ke landing page program pertama
-ahli-k3-umum/          Landing page Ahli K3 Umum
+ahli-k3-umum/          Landing page Ahli K3 Umum Kemnaker RI
+ahli-k3-umum-bnsp/     Landing page Ahli K3 Umum BNSP (online)
 api/submit.php         Menyimpan data form pendaftaran
 api/track.php          Mencatat kunjungan landing page
 admin/                 Dashboard (login, ringkasan, pendaftar, pengaturan, ekspor CSV)

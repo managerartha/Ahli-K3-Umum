@@ -162,6 +162,9 @@ admin_nav('pendaftar.php', $user, false);
             <option value="Blended · Perusahaan · Penginapan · Full (Rp 6.450.000)">
             <option value="Full Offline 12 hari · Umum (Rp 5.000.000)">
             <option value="Full Offline 12 hari · Perusahaan (Rp 6.500.000)">
+            <option value="BNSP Online · Peserta pribadi (Rp 3.500.000)">
+            <option value="BNSP Online · Utusan perusahaan (Rp 3.500.000)">
+            <option value="BNSP Online · Rombongan perusahaan (3+ orang) (Rp 3.500.000)">
           </datalist>
         </div>
         <div>

@@ -16,4 +16,12 @@ const PROGRAMS = [
         'quota_total' => '',
         'quota_left'  => '',
     ],
+    'ahli-k3-umum-bnsp' => [
+        'name'        => 'Ahli K3 Umum BNSP (Online)',
+        'batch_start' => '2026-12-01',
+        'batch_end'   => '2026-12-04',
+        'promo_end'   => '',
+        'quota_total' => '',
+        'quota_left'  => '',
+    ],
 ];

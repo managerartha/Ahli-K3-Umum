@@ -1,6 +1,6 @@
 /** Konfigurasi Tailwind untuk landing page (dipakai oleh tools/build-css.sh). */
 module.exports = {
-  content: ['../ahli-k3-umum/**/*.php', '../kebijakan-privasi/**/*.php'],
+  content: ['../ahli-k3-umum/**/*.php', '../ahli-k3-umum-bnsp/**/*.php', '../kebijakan-privasi/**/*.php'],
   theme: {
     extend: {
       fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
