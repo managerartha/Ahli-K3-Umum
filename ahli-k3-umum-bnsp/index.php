@@ -46,16 +46,23 @@ $batchStarted = time() >= $batchStartTs;
 
 // ---------- Harga ----------
 // Satu harga untuk semua peserta: [harga normal, harga sekarang].
-$fromNormal = 4200000;
-$fromPromo = 3500000;
+// Paket: [harga normal (null = tanpa harga coret), harga sekarang].
+// Basic dan Full sama, bedanya hanya training kit (khusus Full).
+$packages = [
+    'basic' => [null, 2750000],
+    'full'  => [null, 3000000],
+];
+$fromNormal = $packages['basic'][0];
+$fromPromo = $packages['basic'][1];
 $bonusValue = 500000;
+$trainingKit = ['Goodie bag', 'Kemeja safety', 'Blocknote', 'Pulpen'];
 // Jenis peserta di form (disimpan ke dashboard sebagai "paket").
 $participantTypes = [
-    'pribadi'   => 'Peserta pribadi',
-    'utusan'    => 'Utusan perusahaan',
-    'rombongan' => 'Rombongan perusahaan (3+ orang)',
+    'pribadi' => 'Peserta pribadi',
+    'utusan'  => 'Utusan perusahaan',
 ];
-$packageLabel = fn($key) => 'BNSP Online · ' . $participantTypes[$key] . ' (' . $rp($fromPromo) . ')';
+$packageLabel = fn($tier, $who) => 'BNSP Online · ' . ucfirst($tier) . ' · ' . $participantTypes[$who] . ' (' . $rp($packages[$tier][1]) . ')';
+$groupLabel = 'BNSP Online · Rombongan perusahaan (3+ orang)';
 
 $faqs = [
     ['Apa beda sertifikasi Ahli K3 Umum BNSP dengan Kemnaker RI?', 'Sertifikasi <strong>BNSP</strong> mengakui kompetensi seseorang dalam menjalankan tugas sesuai standar SKKNI, diakui secara nasional dan di kawasan ASEAN melalui kerangka MRA. Sertifikasi <strong>Kemnaker RI</strong> berkaitan dengan penunjukan Ahli K3 Umum di perusahaan (SKP &amp; Lisensi).'],
@@ -65,9 +72,10 @@ $faqs = [
     ['Apa itu tugas DIT?', 'Tugas yang dikerjakan peserta di hari ke-3 sebagai bahan presentasi saat asesmen. Instruktur membimbing pengerjaannya supaya kamu siap menghadapi uji kompetensi di hari ke-4.'],
     ['Apa yang perlu disiapkan untuk kelas online?', 'Laptop atau tablet, koneksi internet yang stabil, dan bisa mengoperasikan Zoom. Kelas berlangsung pukul <strong>08.30–16.00 WIB</strong>.'],
     ['Apa beda kelas BNSP online dan offline?', 'Kelas online menghemat waktu dan biaya karena bisa diikuti dari mana saja. Ada tambahan 1 hari khusus untuk mengerjakan tugas DIT sebagai bahan presentasi asesmen.'],
-    ['Kelasnya online, bagaimana dengan training kit?', 'Training kit, modul cetak, himpunan perundang-undangan, pin, dan lencana K3 <strong>dikirim ke alamat peserta</strong> setelah pelunasan.'],
+    ['Apa beda paket Basic dan Full?', 'Materi, uji kompetensi, sertifikat, dan bonusnya <strong>sama</strong>. Bedanya hanya training kit: paket <strong>Full</strong> mendapat goodie bag, kemeja safety, blocknote, dan pulpen. Paket <strong>Basic</strong> tanpa training kit.'],
+    ['Kelasnya online, bagaimana dengan training kit?', 'Training kit paket Full <strong>dikirim ke alamat peserta</strong> setelah pelunasan.'],
     ['Apakah harus bayar lunas di awal?', 'Tidak. Kamu bisa <strong>membayar DP untuk mengamankan kuota</strong>, lalu melunasi sesuai arahan admin.'],
-    ['Apakah perusahaan bisa mendaftarkan karyawan?', 'Bisa. Kami melayani utusan perusahaan maupun <strong>rombongan (3+ orang)</strong>. Pilih jenis peserta di form pendaftaran, admin akan membantu administrasi dan invoice perusahaan.'],
+    ['Apakah perusahaan bisa mendaftarkan karyawan?', 'Bisa. Kami melayani utusan perusahaan maupun <strong>rombongan (3+ orang)</strong>. Pilih paket atau "Rombongan perusahaan" di form pendaftaran, admin akan membantu administrasi dan invoice perusahaan.'],
     ['Apakah bisa ikut jadwal batch berikutnya?', 'Bisa. Konsultasikan jadwal yang cocok dengan admin, lalu amankan kursi kamu cukup dengan DP.'],
 ];
 
@@ -83,12 +91,12 @@ $waNumber = '6281337261261';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Pelatihan Ahli K3 Umum BNSP Online (Sertifikat Kompetensi) - PT Artha Safety Indonesia</title>
-  <meta name="description" content="Pelatihan & sertifikasi Ahli K3 Umum BNSP 100% online via Zoom, 4 hari. Uji kompetensi oleh asesor LSP, cukup ijazah minimal SMA/SLTA. Batch <?= $h($batchLong) ?>. <?= $rp($fromPromo) ?>, cukup DP.">
+  <meta name="description" content="Pelatihan & sertifikasi Ahli K3 Umum BNSP 100% online via Zoom, 4 hari. Uji kompetensi oleh asesor LSP, cukup ijazah minimal SMA/SLTA. Batch <?= $h($batchLong) ?>. Mulai <?= $rp($fromPromo) ?>, cukup DP.">
   <link rel="canonical" href="<?= $h($pageUrl) ?>">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PT Artha Safety Indonesia">
   <meta property="og:title" content="Pelatihan Ahli K3 Umum BNSP Online · Batch <?= $h($batchShort) ?>">
-  <meta property="og:description" content="Sertifikat Kompetensi BNSP berlaku 3 tahun. 2 hari materi via Zoom + 1 hari tugas DIT + asesmen daring. Gratis 40 e-sertifikat HSE. Rp <?= $jt($fromPromo) ?>, cukup DP.">
+  <meta property="og:description" content="Sertifikat Kompetensi BNSP berlaku 3 tahun. 2 hari materi via Zoom + 1 hari tugas DIT + asesmen daring. Gratis 40 e-sertifikat HSE. Mulai Rp <?= $jt($fromPromo) ?>, cukup DP.">
   <meta property="og:url" content="<?= $h($pageUrl) ?>">
   <meta property="og:image" content="<?= $h($siteBase) ?>/assets/img/dok-materi-kelas.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -512,8 +520,8 @@ $waNumber = '6281337261261';
                 </div>
 
                 <div class="sm:col-span-3 sm:text-right">
-                  <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Biaya</p>
-                  <p class="text-xs text-red-500 line-through font-semibold"><?= $rp($fromNormal) ?></p>
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Mulai</p>
+                  <?php if ($fromNormal): ?><p class="text-xs text-red-500 line-through font-semibold"><?= $rp($fromNormal) ?></p><?php endif; ?>
                   <p class="text-xl font-black text-brand-blue tracking-tight leading-tight"><?= $rp($fromPromo) ?></p>
                 </div>
               </div>
@@ -817,8 +825,8 @@ $waNumber = '6281337261261';
             </div>
             <?php endforeach; ?>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
-              <span class="text-slate-500 font-medium">Biaya</span>
-              <span class="text-right"><span class="block text-[11px] text-red-500 line-through font-semibold leading-none"><?= $rp($fromNormal) ?></span><span class="font-extrabold text-brand-blue"><?= $rp($fromPromo) ?></span></span>
+              <span class="text-slate-500 font-medium">Biaya mulai</span>
+              <span class="text-right"><?php if ($fromNormal): ?><span class="block text-[11px] text-red-500 line-through font-semibold leading-none"><?= $rp($fromNormal) ?></span><?php endif; ?><span class="font-extrabold text-brand-blue"><?= $rp($fromPromo) ?></span></span>
             </div>
             <?php if ($hasQuota): ?>
             <div class="py-2 sm:py-2.5 flex items-center justify-between">
@@ -840,19 +848,25 @@ $waNumber = '6281337261261';
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
 
         <div class="lg:col-span-5 flex flex-col items-center justify-center">
-          <div class="relative w-full max-w-[430px] rounded-3xl bg-brand-navy text-white p-7 sm:p-9 shadow-2xl border border-brand-blue/50 overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-brand-blue/40"></div>
-            <div class="absolute -left-12 -bottom-12 w-40 h-40 rounded-full bg-brand-accent/10"></div>
-            <div class="relative">
-              <div class="w-14 h-14 rounded-2xl bg-brand-accent text-brand-dark flex items-center justify-center text-2xl mb-5"><i class="fa-solid fa-award"></i></div>
-              <p class="text-[11px] font-extrabold uppercase tracking-wider text-brand-accent">Badan Nasional Sertifikasi Profesi</p>
-              <h3 class="text-2xl sm:text-3xl font-black tracking-tight mt-1">Sertifikat Kompetensi Ahli K3 Umum</h3>
-              <div class="mt-6 grid grid-cols-2 gap-3 text-xs">
-                <div class="rounded-xl bg-white/10 border border-white/15 p-3"><p class="text-slate-300">Masa berlaku</p><p class="font-black text-base">3 tahun</p></div>
-                <div class="rounded-xl bg-white/10 border border-white/15 p-3"><p class="text-slate-300">Standar</p><p class="font-black text-base">SKKNI K3</p></div>
-                <div class="rounded-xl bg-white/10 border border-white/15 p-3"><p class="text-slate-300">Pengakuan</p><p class="font-black text-base">Nasional &amp; ASEAN</p></div>
-                <div class="rounded-xl bg-white/10 border border-white/15 p-3"><p class="text-slate-300">Diuji oleh</p><p class="font-black text-base">Asesor LSP</p></div>
-              </div>
+          <div class="relative w-full max-w-[400px] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200/90 bg-white group flex items-center justify-center p-2 sm:p-2.5 transition-all duration-300 hover:shadow-[0_25px_50px_-12px_rgba(7,28,110,0.18)]">
+            <img
+              src="../assets/img/sertifikat-bnsp.jpg"
+              alt="Contoh Sertifikat Kompetensi Ahli K3 Umum BNSP"
+              width="800" height="1150" loading="lazy"
+              class="w-full h-auto object-contain rounded-xl sm:rounded-2xl transform transition-transform duration-500 group-hover:scale-[1.015]"
+            />
+            <div class="absolute inset-0 rounded-2xl sm:rounded-3xl ring-1 ring-inset ring-black/5 pointer-events-none"></div>
+          </div>
+
+          <!-- Floating Accreditation Badge -->
+          <div class="w-[90%] sm:w-[86%] max-w-[380px] -mt-5 sm:-mt-6 z-10 bg-brand-navy rounded-2xl p-4 sm:p-5 shadow-2xl border border-brand-blue/50 text-white flex items-center gap-4">
+            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-brand-blue border-2 border-brand-accent text-brand-accent flex items-center justify-center font-black text-[10px] sm:text-xs flex-shrink-0 shadow-inner">
+              <span>BNSP</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-brand-accent leading-none mb-1">CONTOH SERTIFIKAT</p>
+              <h4 class="text-sm sm:text-base font-extrabold text-white truncate">Sertifikat Kompetensi BNSP</h4>
+              <p class="text-xs text-slate-300 leading-snug mt-0.5">Berlaku 3 tahun, diterbitkan melalui LSP K3 Nasional.</p>
             </div>
           </div>
         </div>
@@ -949,50 +963,25 @@ $waNumber = '6281337261261';
     </h2>
 
     <div class="w-full bg-[#FAF8F2] rounded-3xl border border-[#EDE5D3] p-6 sm:p-10 shadow-sm">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-
-        <div class="lg:col-span-5 flex justify-center">
-          <div class="relative w-full max-w-[420px] rounded-2xl overflow-hidden shadow-md bg-white border border-blue-200/50">
-            <img
-              src="../assets/img/poster-fasilitas.jpg"
-              alt="Training kit peserta pelatihan Ahli K3 Umum PT Artha Safety Indonesia"
-              class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
-              onerror="this.onerror=null; this.src='https://placehold.co/600x800/071C6E/ffffff?text=Fasilitas+Training+Artha+Safety';"
-            />
+      <?php
+      $facGroups = [
+          ['Semua paket (Basic &amp; Full)', 'bg-brand-subtle text-brand-blue', 'fa-book', ['Modul pelatihan', 'Materi pelatihan', 'Free 40 e-sertifikat HSE', 'Sertifikat Kompetensi BNSP (peserta kompeten)']],
+          ['Training kit · khusus Full Package', 'bg-brand-accent/30 text-brand-dark', 'fa-box-open', $trainingKit],
+      ];
+      ?>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <?php foreach ($facGroups as [$title, $badge, $icon, $items]): ?>
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full <?= $badge ?>"><i class="fa-solid <?= $icon ?>"></i><?= $title ?></span>
+            <ul class="mt-4 grid grid-cols-2 gap-x-5 gap-y-2.5">
+              <?php foreach ($items as $it): ?>
+                <li class="flex items-start gap-2.5 text-xs sm:text-sm font-bold text-slate-800"><i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i><span><?= $it ?></span></li>
+              <?php endforeach; ?>
+            </ul>
           </div>
-        </div>
-
-        <div class="lg:col-span-7 flex flex-col justify-center">
-          <?php
-          $facGroups = [
-              ['Training kit', 'bg-brand-accent/30 text-brand-dark', 'fa-box-open', [
-                  'Tumbler', 'Kemeja safety', 'T-shirt safety', 'Ransel', 'Blocknote', 'Pulpen',
-              ]],
-              ['Materi belajar', 'bg-brand-subtle text-brand-blue', 'fa-book', [
-                  'Modul pelatihan versi cetak (hardcopy)',
-                  'Himpunan perundang-undangan K3',
-              ]],
-              ['Atribut K3', 'bg-brand-navy text-white', 'fa-id-badge', [
-                  'Pin K3', 'Lencana K3',
-              ]],
-          ];
-          ?>
-          <div class="space-y-3">
-            <?php foreach ($facGroups as [$title, $badge, $icon, $items]): ?>
-              <div class="bg-white rounded-2xl border border-slate-200/80 p-4">
-                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full <?= $badge ?>"><i class="fa-solid <?= $icon ?>"></i><?= $title ?></span>
-                <ul class="mt-3 grid grid-cols-2 gap-x-5 gap-y-2">
-                  <?php foreach ($items as $it): ?>
-                    <li class="flex items-start gap-2.5 text-xs sm:text-sm font-bold text-slate-800"><i class="fa-solid fa-circle-check text-brand-blue text-sm mt-0.5 flex-shrink-0"></i><span><?= $it ?></span></li>
-                  <?php endforeach; ?>
-                </ul>
-              </div>
-            <?php endforeach; ?>
-            <p class="text-xs text-slate-500 font-semibold px-1"><i class="fa-solid fa-truck-fast text-brand-blue mr-1.5"></i>Semua fasilitas dikirim ke alamat peserta setelah pelunasan.</p>
-          </div>
-        </div>
-
+        <?php endforeach; ?>
       </div>
+      <p class="text-xs text-slate-500 font-semibold mt-4 px-1"><i class="fa-solid fa-truck-fast text-brand-blue mr-1.5"></i>Training kit dikirim ke alamat peserta setelah pelunasan.</p>
     </div>
   </section>
 
@@ -1285,7 +1274,7 @@ $waNumber = '6281337261261';
             Biaya Sertifikasi Ahli K3 Umum BNSP 2026
           </h2>
           <p class="text-xs sm:text-sm md:text-base text-slate-500 font-medium">
-            Satu harga untuk peserta pribadi maupun utusan perusahaan, sudah termasuk pembekalan dan uji kompetensi. <strong class="text-brand-navy">Cukup bayar DP untuk mengamankan kuota.</strong>
+            Dua pilihan paket untuk peserta pribadi maupun utusan perusahaan, keduanya sudah termasuk pembekalan dan uji kompetensi. Bedanya hanya training kit. <strong class="text-brand-navy">Cukup bayar DP untuk mengamankan kuota.</strong>
           </p>
 
           <?php if ($promoActive || $hasQuota): ?>
@@ -1296,54 +1285,43 @@ $waNumber = '6281337261261';
           <?php endif; ?>
         </div>
 
+        <?php
+        $common = ['Pembekalan materi sesuai unit kompetensi SKKNI', 'Uji kompetensi oleh asesor LSP', '<strong>Sertifikat Kompetensi BNSP</strong> bagi peserta kompeten (berlaku 3 tahun)', 'Kelas online via Zoom, 4 hari', 'Modul &amp; materi pelatihan', 'Free 40 e-sertifikat HSE'];
+        ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch max-w-4xl mx-auto">
-          <div class="w-full bg-brand-navy text-white rounded-3xl p-7 sm:p-9 shadow-2xl relative flex flex-col justify-between border border-brand-blue/60 overflow-hidden">
-            <div class="absolute top-0 right-0"><div class="bg-brand-accent text-brand-dark font-black text-[10px] sm:text-xs px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-md">TERMASUK UJI KOMPETENSI</div></div>
-            <div>
-              <span class="text-xs font-black uppercase tracking-wider text-brand-accent">KELAS ONLINE · 4 HARI</span>
-              <h3 class="text-2xl font-black text-white mt-3 mb-1 tracking-tight">Sertifikasi BNSP Online</h3>
-              <p class="text-xs font-semibold text-slate-300">Peserta pribadi maupun utusan perusahaan</p>
-              <div class="my-5">
-                <span class="block text-sm font-bold line-through text-red-300"><?= $rp($fromNormal) ?></span>
-                <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-brand-accent"><?= $rp($fromPromo) ?></span>
-                <p class="text-xs font-bold mt-1.5 text-brand-accent">Hemat <?= $rp($fromNormal - $fromPromo) ?> · cukup DP untuk amankan kuota</p>
-              </div>
-              <div class="w-full border-t my-6 border-white/15"></div>
-              <div class="space-y-3.5 text-xs sm:text-sm text-slate-200">
-                <?php foreach (['Pembekalan materi sesuai unit kompetensi SKKNI', 'Uji kompetensi oleh asesor LSP', '<strong>Sertifikat Kompetensi BNSP</strong> bagi peserta kompeten (berlaku 3 tahun)', 'Kelas online via Zoom, 4 hari', 'Free 40 e-sertifikat HSE', 'Training kit, modul cetak &amp; atribut K3 dikirim ke rumah'] as $f): ?>
-                  <div class="flex items-start gap-3"><i class="fa-solid fa-check text-xs mt-1 flex-shrink-0 text-brand-accent"></i><span><?= $f ?></span></div>
-                <?php endforeach; ?>
-              </div>
-            </div>
-            <div class="mt-8 pt-4">
-              <a href="#registration" onclick="pickPackage('pribadi')" class="w-full font-black text-sm py-3.5 px-5 rounded-2xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer bg-brand-accent hover:bg-brand-accentHover text-brand-dark shadow-lime">
-                <span>Daftar Sekarang</span><i class="fa-solid fa-arrow-right text-xs"></i>
-              </a>
-            </div>
-          </div>
-
-          <div class="w-full bg-white rounded-3xl p-7 sm:p-9 border-2 border-slate-200 shadow-sm flex flex-col">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">SUDAH TERMASUK</span>
-            <h3 class="text-2xl font-black text-brand-navy mb-5 tracking-tight">Fasilitas yang dikirim ke rumah</h3>
-            <div class="space-y-4 text-xs sm:text-sm">
-              <?php foreach ([
-                  ['fa-box-open', 'Training kit', 'Tumbler, kemeja safety, t-shirt safety, ransel, blocknote, pulpen'],
-                  ['fa-book', 'Materi belajar', 'Modul pelatihan cetak &amp; himpunan perundang-undangan K3'],
-                  ['fa-id-badge', 'Atribut K3', 'Pin dan lencana K3'],
-              ] as [$i, $t, $d]): ?>
-                <div class="flex items-start gap-3">
-                  <div class="w-9 h-9 rounded-xl bg-brand-subtle text-brand-blue flex items-center justify-center flex-shrink-0"><i class="fa-solid <?= $i ?> text-sm"></i></div>
-                  <div><p class="font-extrabold text-brand-navy"><?= $t ?></p><p class="text-slate-500"><?= $d ?></p></div>
+          <?php foreach ($packages as $tier => [$normal, $promo]): $isFull = $tier === 'full'; ?>
+            <div class="w-full rounded-3xl p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden <?= $isFull ? 'bg-brand-navy text-white shadow-2xl border border-brand-blue/60' : 'bg-white border-2 border-slate-200 shadow-sm transition-all hover:border-brand-blue/50 hover:shadow-md' ?>">
+              <?php if ($isFull): ?>
+                <div class="absolute top-0 right-0"><div class="bg-brand-accent text-brand-dark font-black text-[10px] sm:text-xs px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-md">BEST VALUE</div></div>
+              <?php endif; ?>
+              <div>
+                <span class="text-xs font-black uppercase tracking-wider <?= $isFull ? 'text-brand-accent' : 'text-slate-400' ?>"><?= $isFull ? 'FULL PACKAGE' : 'BASIC PACKAGE' ?></span>
+                <h3 class="text-2xl font-black mt-3 mb-1 tracking-tight <?= $isFull ? 'text-white' : 'text-brand-navy' ?>">BNSP Online · <?= ucfirst($tier) ?></h3>
+                <p class="text-xs font-semibold <?= $isFull ? 'text-slate-300' : 'text-slate-500' ?>"><?= $isFull ? 'Termasuk training kit' : 'Tanpa training kit' ?> · peserta pribadi &amp; utusan perusahaan</p>
+                <div class="my-5">
+                  <?php if ($normal): ?><span class="block text-sm font-bold line-through <?= $isFull ? 'text-red-300' : 'text-red-500' ?>"><?= $rp($normal) ?></span><?php endif; ?>
+                  <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight <?= $isFull ? 'text-brand-accent' : 'text-brand-navy' ?>"><?= $rp($promo) ?></span>
+                  <p class="text-xs font-bold mt-1.5 <?= $isFull ? 'text-brand-accent' : 'text-emerald-600' ?>"><?= $normal ? 'Hemat ' . $rp($normal - $promo) . ' · ' : '' ?>cukup DP untuk amankan kuota</p>
                 </div>
-              <?php endforeach; ?>
+                <div class="w-full border-t my-6 <?= $isFull ? 'border-white/15' : 'border-slate-100' ?>"></div>
+                <div class="space-y-3.5 text-xs sm:text-sm <?= $isFull ? 'text-slate-200' : 'text-slate-700' ?>">
+                  <?php foreach ($common as $f): ?>
+                    <div class="flex items-start gap-3"><i class="fa-solid fa-check text-xs mt-1 flex-shrink-0 <?= $isFull ? 'text-brand-accent' : 'text-brand-blue' ?>"></i><span><?= $f ?></span></div>
+                  <?php endforeach; ?>
+                  <?php if ($isFull): ?>
+                    <div class="flex items-start gap-3"><i class="fa-solid fa-check text-xs mt-1 flex-shrink-0 text-brand-accent"></i><span><strong>Training kit</strong>: <?= strtolower(implode(', ', $trainingKit)) ?> (dikirim ke rumah)</span></div>
+                  <?php endif; ?>
+                </div>
+              </div>
+              <div class="mt-8 pt-4">
+                <a href="#registration" onclick="pickPackage('<?= $tier ?>-pribadi')" class="w-full font-black text-sm py-3.5 px-5 rounded-2xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer <?= $isFull ? 'bg-brand-accent hover:bg-brand-accentHover text-brand-dark shadow-lime' : 'bg-white hover:bg-slate-50 text-brand-navy border-2 border-brand-navy hover:border-brand-blue hover:text-brand-blue' ?>">
+                  <span>Pilih Paket <?= ucfirst($tier) ?></span><i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+              </div>
             </div>
-            <div class="mt-auto pt-6">
-              <a href="#registration" onclick="pickPackage('rombongan')" class="w-full font-black text-sm py-3.5 px-5 rounded-2xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer bg-white hover:bg-slate-50 text-brand-navy border-2 border-brand-navy hover:border-brand-blue hover:text-brand-blue">
-                <i class="fa-solid fa-people-group text-xs"></i><span>Daftar Rombongan Perusahaan</span>
-              </a>
-            </div>
-          </div>
+          <?php endforeach; ?>
         </div>
+        <p class="max-w-4xl mx-auto text-center text-xs sm:text-sm text-slate-500 mt-6"><i class="fa-solid fa-people-group text-brand-blue mr-1.5"></i>Mendaftarkan 3 orang atau lebih dari perusahaan? <a href="#registration" onclick="pickPackage('rombongan')" class="font-bold text-brand-blue underline hover:text-brand-navy">Pilih "Rombongan perusahaan" di form</a>, admin bantu invoice perusahaan.</p>
 
         <div class="max-w-4xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div class="rounded-2xl bg-brand-subtle border border-blue-100 p-4"><p class="font-extrabold text-brand-navy mb-1"><i class="fa-solid fa-laptop text-brand-blue mr-1.5"></i>Belajar dari mana saja</p><p class="text-slate-600">Tidak perlu biaya perjalanan dan penginapan. Cukup laptop/tablet dan internet stabil.</p></div>
@@ -1530,13 +1508,18 @@ $waNumber = '6281337261261';
 
               <div>
                 <label for="regSelectedScheme" class="block text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-                  JENIS PESERTA <span class="text-slate-400 font-semibold normal-case tracking-normal">(opsional)</span>
+                  PAKET YANG DIMINATI <span class="text-slate-400 font-semibold normal-case tracking-normal">(opsional)</span>
                 </label>
                 <select id="regSelectedScheme" class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-blue/30 focus:border-brand-navy text-xs sm:text-sm font-semibold text-slate-800 bg-white">
                   <option value="Belum tahu, mohon dibantu">Belum tahu, mohon dibantu</option>
-                  <?php foreach ($participantTypes as $key => $_): $lbl = $packageLabel($key); ?>
-                    <option value="<?= $h($lbl) ?>" data-pkg="<?= $key ?>"><?= $h($participantTypes[$key]) ?></option>
+                  <?php foreach ($packages as $tier => [$_n, $price]): ?>
+                  <optgroup label="<?= ucfirst($tier) ?> Package (<?= $rp($price) ?>)<?= $tier === 'full' ? ' · dengan training kit' : '' ?>">
+                    <?php foreach ($participantTypes as $who => $whoLabel): $lbl = $packageLabel($tier, $who); ?>
+                      <option value="<?= $h($lbl) ?>" data-pkg="<?= $tier ?>-<?= $who ?>"><?= ucfirst($tier) ?> · <?= $h($whoLabel) ?> (<?= $rp($price) ?>)</option>
+                    <?php endforeach; ?>
+                  </optgroup>
                   <?php endforeach; ?>
+                  <option value="<?= $h($groupLabel) ?>" data-pkg="rombongan">Rombongan perusahaan (3+ orang)</option>
                 </select>
               </div>
 
@@ -1578,7 +1561,7 @@ $waNumber = '6281337261261';
                   <span id="summaryPhone" class="font-extrabold text-brand-navy text-right"></span>
                 </div>
                 <div class="flex items-center justify-between pt-0.5">
-                  <span class="text-slate-500 font-medium">Jenis Peserta:</span>
+                  <span class="text-slate-500 font-medium">Paket Dipilih:</span>
                   <span id="summaryScheme" class="font-extrabold text-brand-blue text-right"></span>
                 </div>
               </div>
@@ -1787,7 +1770,7 @@ $waNumber = '6281337261261';
           <ul class="space-y-3 text-xs sm:text-[13px] font-semibold text-slate-600">
             <li><a href="#pricing" class="hover:text-brand-blue transition">Ahli K3 Umum BNSP (Online)</a></li>
             <li><a href="../ahli-k3-umum/" class="hover:text-brand-blue transition">Ahli K3 Umum Kemnaker RI</a></li>
-            <li><a href="#registration" onclick="pickPackage('utusan')" class="hover:text-brand-blue transition">Utusan &amp; Rombongan Perusahaan</a></li>
+            <li><a href="#registration" onclick="pickPackage('full-utusan')" class="hover:text-brand-blue transition">Utusan &amp; Rombongan Perusahaan</a></li>
             <li><button type="button" onclick="openModal('advisorModal')" class="hover:text-brand-blue transition text-left cursor-pointer">Corporate In-House</button></li>
           </ul>
         </div>
@@ -1887,7 +1870,7 @@ $waNumber = '6281337261261';
   <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(7,28,110,0.12)] px-4 py-3 flex items-center justify-between">
     <div class="flex flex-col">
       <span class="text-xs sm:text-sm font-black text-brand-navy leading-tight">Batch <?= $h($batchShort) ?><?= $hasQuota && !$quotaFull ? ' · <span class="text-red-600">sisa ' . $quotaLeft . ' kursi</span>' : '' ?></span>
-      <span class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">Mulai <span class="line-through text-red-500"><?= $jt($fromNormal) ?></span> <span class="text-brand-navy font-extrabold">Rp <?= $jt($fromPromo) ?></span></span>
+      <span class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5">Mulai <?php if ($fromNormal): ?><span class="line-through text-red-500"><?= $jt($fromNormal) ?></span> <?php endif; ?><span class="text-brand-navy font-extrabold">Rp <?= $jt($fromPromo) ?></span></span>
     </div>
 
     <a href="#registration" class="bg-brand-accent hover:bg-brand-accentHover active:scale-95 text-brand-dark font-black text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-lime flex items-center gap-2 transition duration-150">
@@ -2182,7 +2165,7 @@ $waNumber = '6281337261261';
       var message = 'Halo PT Artha Safety Indonesia, saya ingin daftar Pelatihan Ahli K3 Umum BNSP (Online via Zoom).\n\n' +
         '*Nama:* ' + name + '\n' +
         '*No. WhatsApp:* ' + phone + '\n' +
-        '*Jenis peserta:* ' + scheme + '\n' +
+        '*Paket:* ' + scheme + '\n' +
         '*Batch:* ' + <?= json_encode($batchLong) ?> + '\n\n' +
         'Mohon info kuota dan langkah selanjutnya. Terima kasih!';
       var waUrl = 'https://wa.me/<?= $waNumber ?>?text=' + encodeURIComponent(message);
