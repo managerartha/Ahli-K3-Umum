@@ -2669,7 +2669,8 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         'Mohon info kuota dan langkah selanjutnya. Terima kasih!';
       var waUrl = 'https://wa.me/<?= $waNumber ?>?text=' + encodeURIComponent(message);
 
-      try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch (pixelErr) {}
+      // Event standar Lead (Prospek) + label program agar Kemnaker & BNSP bisa dipisah di Meta
+      try { if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'Ahli K3 Umum Kemnaker RI', content_category: LANDING_PROGRAM }); } catch (pixelErr) {}
 
       var payload = {
         program: LANDING_PROGRAM, name: name, phone: phone, email: '', scheme: scheme,
