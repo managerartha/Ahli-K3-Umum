@@ -126,10 +126,13 @@ $waNumber = '6281337261261';
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"></noscript>
 
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
   <!-- Tampilan: CSS hasil build Tailwind (lihat tools/build-css.sh) -->
   <link rel="stylesheet" href="../assets/css/ahli-k3-umum.css?v=<?= @filemtime(dirname(__DIR__) . '/assets/css/ahli-k3-umum.css') ?: 1 ?>">
@@ -774,10 +777,10 @@ $waNumber = '6281337261261';
             aria-label="Putar Video Resmi Pelatihan Ahli K3 Umum PT Artha Safety Indonesia"
           >
             <img
-              src="https://img.youtube.com/vi/T6Y7vA2ks1g/maxresdefault.jpg"
+              src="https://img.youtube.com/vi/T6Y7vA2ks1g/hqdefault.jpg" width="480" height="360" loading="lazy" decoding="async"
               alt="Video Pelatihan Ahli K3 Umum PT Artha Safety Indonesia"
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
-              onerror="this.onerror=null; this.src='https://img.youtube.com/vi/T6Y7vA2ks1g/hqdefault.jpg';"
+              onerror="this.onerror=null; this.src='https://img.youtube.com/vi/T6Y7vA2ks1g/mqdefault.jpg';"
             >
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy/90 via-black/25 to-transparent"></div>
 
@@ -1014,7 +1017,7 @@ $waNumber = '6281337261261';
         <!-- SLOT 0 -->
         <div id="docSlot0" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="../assets/img/dok-apar.jpg" alt="Praktik Pemadaman Api APAR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-apar.jpg" alt="Praktik Pemadaman Api APAR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1033,7 +1036,7 @@ $waNumber = '6281337261261';
         <!-- SLOT 1 -->
         <div id="docSlot1" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="../assets/img/dok-observasi-norma.jpg" alt="Observasi Objek Norma K3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-observasi-norma.jpg" alt="Observasi Objek Norma K3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1052,7 +1055,7 @@ $waNumber = '6281337261261';
         <!-- SLOT 2 -->
         <div id="docSlot2" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="../assets/img/dok-fire-drill.jpg" alt="Simulasi Evakuasi & Fire Drill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-fire-drill.jpg" alt="Simulasi Evakuasi & Fire Drill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1071,7 +1074,7 @@ $waNumber = '6281337261261';
         <!-- SLOT 3 -->
         <div id="docSlot3" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img src="../assets/img/dok-scba.jpg" alt="Pelatihan Penggunaan SCBA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-scba.jpg" alt="Pelatihan Penggunaan SCBA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
@@ -1522,7 +1525,7 @@ $waNumber = '6281337261261';
         <div class="flex items-end justify-center lg:justify-end gap-6 sm:gap-8 shrink-0 w-full lg:w-auto self-end">
 
           <div class="flex items-end justify-center shrink-0 -mb-[1px]">
-            <img
+            <img loading="lazy" decoding="async"
               src="../assets/img/komunitas.jpg"
               alt="Safety Champions Community Artha Safety"
               class="h-72 sm:h-84 md:h-96 lg:h-[390px] xl:h-[440px] w-auto object-contain object-bottom block drop-shadow-sm transition-transform duration-300 hover:scale-[1.02]"
@@ -1575,18 +1578,16 @@ $waNumber = '6281337261261';
 
               <!-- LOGO RESMI KEMNAKER RI & BNSP TANPA BACKGROUND PUTIH -->
               <div class="flex flex-wrap items-center gap-5">
-                <img
-                  src="https://temank3.kemnaker.go.id/public/themes/website/asset/img/logo.png"
-                  alt="Kementerian Ketenagakerjaan RI"
+                <img loading="lazy" decoding="async"
+                  src="../assets/img/logo-kemnaker.png" width="205" height="84" alt="Kementerian Ketenagakerjaan RI"
                   class="h-8 sm:h-9 w-auto max-w-[150px] object-contain brightness-0 opacity-80 hover:opacity-100 transition"
-                  onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Logo_Kementerian_Ketenagakerjaan_%282016%29.png/320px-Logo_Kementerian_Ketenagakerjaan_%282016%29.png';"
+                  
                 >
 
-                <img
-                  src="https://bnsp.go.id/assets/landing-page/v3/img/bnsp-black.png"
-                  alt="BNSP - Badan Nasional Sertifikasi Profesi"
+                <img loading="lazy" decoding="async"
+                  src="../assets/img/logo-bnsp.png" width="300" height="114" alt="BNSP - Badan Nasional Sertifikasi Profesi"
                   class="h-7 sm:h-8 w-auto max-w-[110px] object-contain opacity-85 hover:opacity-100 transition"
-                  onerror="this.onerror=null; this.src='https://bnsp.go.id/assets/landing-page/v3/img/bnsp-black.png';"
+                  
                 >
               </div>
             </div>
@@ -1916,7 +1917,7 @@ $waNumber = '6281337261261';
       var newLayer = document.createElement('div');
       newLayer.className = 'doc-card-layer absolute inset-0 w-full h-full animate-slide-in-up z-10';
       newLayer.innerHTML =
-        '<img src="' + nextItem.url + '" alt="' + nextItem.title + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src=\'https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3\';">' +
+        '<img loading="lazy" decoding="async" src="' + nextItem.url + '" alt="' + nextItem.title + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src=\'https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3\';">' +
         '<div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>' +
         '<div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">' +
           '<span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">' +
