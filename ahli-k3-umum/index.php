@@ -1584,17 +1584,17 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 0 -->
         <div id="docSlot0" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img loading="lazy" decoding="async" src="../assets/img/dok-apar.jpg" alt="Praktik Pemadaman Api APAR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-graduation.jpg" alt="Graduation" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
-                Praktik Lapangan
+                Ujian Seminar
               </span>
               <h3 class="text-base sm:text-lg font-black text-white leading-tight">
-                Praktik Pemadaman Api APAR
+                Graduation
               </h3>
               <p class="text-xs text-slate-300 font-medium mt-1 leading-snug">
-                Basic Safety Training (BST)
+                Ahli K3 Umum Kemnaker
               </p>
             </div>
           </div>
@@ -1603,14 +1603,14 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 1 -->
         <div id="docSlot1" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img loading="lazy" decoding="async" src="../assets/img/dok-observasi-norma.jpg" alt="Observasi Objek Norma K3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-observasi-industri.jpg" alt="Observasi Industri" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
-                Kunjungan Pabrik
+                Kunjungan Pabrik AK3U Yogyakarta
               </span>
               <h3 class="text-base sm:text-lg font-black text-white leading-tight">
-                Observasi Objek Norma K3
+                Observasi Industri
               </h3>
               <p class="text-xs text-slate-300 font-medium mt-1 leading-snug">
                 Praktek Kerja Lapangan (PKL)
@@ -1622,17 +1622,17 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 2 -->
         <div id="docSlot2" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img loading="lazy" decoding="async" src="../assets/img/dok-fire-drill.jpg" alt="Simulasi Evakuasi & Fire Drill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-fire-fighting.jpg" alt="Simulasi Evakuasi &amp; Fire Fighting" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
-                Instruktur Damkar
+                Instruktur Damkar Kota
               </span>
               <h3 class="text-base sm:text-lg font-black text-white leading-tight">
-                Simulasi Evakuasi & Fire Drill
+                Simulasi Evakuasi &amp; Fire Fighting
               </h3>
               <p class="text-xs text-slate-300 font-medium mt-1 leading-snug">
-                Tanggap Darurat Kebakaran
+                Inhouse Training
               </p>
             </div>
           </div>
@@ -1641,17 +1641,17 @@ Program ini cocok untuk fresh graduate yang ingin masuk industri, karyawan yang 
         <!-- SLOT 3 -->
         <div id="docSlot3" class="doc-card-container relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-card border border-slate-200/90 bg-brand-navy group">
           <div class="doc-card-layer absolute inset-0 w-full h-full">
-            <img loading="lazy" decoding="async" src="../assets/img/dok-scba.jpg" alt="Pelatihan Penggunaan SCBA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
+            <img loading="lazy" decoding="async" src="../assets/img/dok-p3k.jpg" alt="Praktek P3K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x500/071C6E/ffffff?text=Dokumentasi+K3';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
             <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-left flex flex-col justify-end">
               <span class="inline-block bg-brand-accent text-brand-dark text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 self-start shadow-xs">
-                Safety Drill
+                Instruktur PMI
               </span>
               <h3 class="text-base sm:text-lg font-black text-white leading-tight">
-                Pelatihan Penggunaan SCBA
+                Praktek P3K
               </h3>
               <p class="text-xs text-slate-300 font-medium mt-1 leading-snug">
-                Ruang Terbatas & Masker Asap
+                Inhouse Training
               </p>
             </div>
           </div>
