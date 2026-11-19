@@ -143,10 +143,26 @@ function meta_auto_sync(): void
 }
 
 /** Iklan yang pernah menghasilkan chat WhatsApp = iklan WA (klik ke WhatsApp). */
+/**
+ * Iklan yang dianggap iklan WhatsApp (klik-ke-WA), bukan iklan landing page.
+ *
+ * Iklan landing page kadang tetap tercatat punya beberapa chat WA di Meta,
+ * jadi satu chat saja tidak cukup. Iklan dianggap WA bila:
+ *  - chat WA minimal 20% dari klik tautan, dan
+ *  - kunjungan landing page yang tercatat dari iklan itu lebih sedikit dari chat WA-nya.
+ */
 function wa_ad_ids(): array
 {
+    $visits = [];
+    foreach (db()->query("SELECT ad_id, COUNT(*) n FROM visits WHERE ad_id IS NOT NULL AND ad_id <> '' GROUP BY ad_id") as $r) {
+        $visits[$r['ad_id']] = (int) $r['n'];
+    }
     $ids = [];
-    foreach (db()->query('SELECT ad_id FROM ad_insights GROUP BY ad_id HAVING SUM(messaging) > 0') as $r) $ids[$r['ad_id']] = true;
+    foreach (db()->query('SELECT ad_id, SUM(messaging) m, SUM(clicks) c FROM ad_insights GROUP BY ad_id HAVING SUM(messaging) > 0') as $r) {
+        $m = (int) $r['m'];
+        $c = (int) $r['c'];
+        if ($m * 5 >= $c && ($visits[$r['ad_id']] ?? 0) < $m) $ids[$r['ad_id']] = true;
+    }
     return $ids;
 }
 
